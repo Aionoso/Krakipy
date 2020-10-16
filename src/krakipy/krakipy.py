@@ -1,3 +1,21 @@
+# This file is part of krakipy.
+#
+# krakipy is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# krakipy is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser
+# General Public LICENSE along with krakipy. If not, see
+# <http://www.gnu.org/licenses/lgpl-3.0.txt> and
+# <http://www.gnu.org/licenses/gpl-3.0.txt>.
+
+
 from pandas import to_datetime, DataFrame, Series, concat
 from datetime import datetime, timedelta
 from requests import Session, HTTPError
@@ -301,7 +319,7 @@ class KrakenAPI(object):
     @callratelimiter(2)
     def get_ledgers_info(self, aclass=None, asset=None, selection_type="all", start=None, end=None, ofs=None):
         res = self._do_private_request("Ledgers", aclass=aclass, asset=asset, type=selection_type, start=start, end=end, ofs=ofs)
-        ledgers = pd.DataFrame(res["ledger"]).T
+        ledgers = DataFrame(res["ledger"]).T
         count = int(res["count"])
         if not ledgers.empty:
             ledgers[["amount", "balance", "fee"]] = ledgers[["amount", "balance", "fee"]].astype(float)
@@ -311,7 +329,7 @@ class KrakenAPI(object):
     @callratelimiter(2)
     def query_ledgers(self, id):
         res = self._do_private_request("QueryLedgers", id=id)
-        ledgers = pd.DataFrame(res).T
+        ledgers = DataFrame(res).T
         if not ledgers.empty:
             ledgers[["amount", "balance", "fee"]] = ledgers[["amount", "balance", "fee"]].astype(float)
             ledgers["time"] = ledgers["time"].astype(int)
@@ -364,7 +382,7 @@ class KrakenAPI(object):
 
     def _update_api_counter(self):
         now = time()
-        self.api_counter = min(0, self.api_counter - int(now - self.time_of_last_query))
+        self.api_counter = max(0, self.api_counter - int(now - self.time_of_last_query))
         self.time_of_last_query = now
 
 
