@@ -5,7 +5,7 @@ def read(fname):
     with open(fname, "r") as f:
         text = f.read()
     return text
-#    py_modules=["krakipy"],    
+      
 setup(name = "krakipy", 
     version = __version__,
     description = "A Python REST-API for the Kraken exchange", 
