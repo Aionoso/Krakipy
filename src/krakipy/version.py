@@ -1,0 +1,5 @@
+__version__ = "0.0.4"
+__author__ = "Hubertus Wilisch"
+__copyright__ = "Copyright 2020 Hubertus Wilisch"
+__license__ = "GNU GPL"
+__url__ = "https://github.com/Aionoso/Krakipy/"

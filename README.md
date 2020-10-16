@@ -1,2 +1,0 @@
-# Krakipy
-Kraken API
