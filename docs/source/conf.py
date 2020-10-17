@@ -151,7 +151,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'Krakipy', 'Krakipy Documentation',
-     author, 'Krakipy', 'One line description of project.',
+     author, 'Krakipy', 'A Python REST-API for the Kraken exchange',
      'Miscellaneous'),
 ]
 
