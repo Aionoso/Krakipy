@@ -58,9 +58,23 @@ class CallRateLimitError(Exception):
 
 
 class KrakenAPI(object):
-    def __init__(self, key="", secret="", retry=0.5, limit=20):
+    def __init__(self, key="", secret_key="", retry=0.5, limit=20):
+    	""" Creates an object that holds the authentification information.
+    	The keys are needed to perform private queries
+		
+		:param key: the key to the Kraken API
+		:type key: str
+		:param secret_key: the secret key to the Kraken API
+		:type secret_key: str
+		:param retry: the amount of time between retries
+		:type retry: float
+		:param limit: the maximum amount of retries
+		:type limit: int
+		:returns: None
+
+    	"""
         self._key = key
-        self._secret = secret
+        self._secret = secret_key
         self.uri = "https://api.kraken.com"
         self.apiversion = "0"
         self.session = Session()
@@ -83,12 +97,19 @@ class KrakenAPI(object):
         self.session.close()
 
     def close(self):
+    	""" Closes the session
+    	"""
         self.session.close()
 
     def __str__(self):
         return f"[{__class__.__name__}]\nVERSION:         {self.apiversion}\nURI:             {self.uri}\nAPI-Key:         {'*' * len(self._key) if self._key else '-'}\nAPI-Secretkey:   {'*' * len(self._secret) if self._secret else '-'}\nAPI-Counter:     {self.api_counter}\nRequest-Counter: {self.counter}\nRequest-Limit:   {self.limit}\nRequest-Retry:   {self.retry} s"
 
     def _nonce(self):
+    	""" The nonce is a is always-increasing int.
+    	It goes up by 1 everey µs.
+
+    	returns: int
+    	"""
         return int(1000*time())
 
     def _sign(self, data, urlpath):
@@ -149,6 +170,10 @@ class KrakenAPI(object):
 
     @callratelimiter(1)
     def get_server_time(self):
+    	""" Returns the time of the Kraken API server.
+
+    	returns: (str, int) - rfc1123 and unixtime
+    	"""
         res = self._query_public("Time")
         check_error(res)
         return res["result"]["rfc1123"], res["result"]["unixtime"]

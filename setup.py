@@ -5,7 +5,7 @@ def read(fname):
     with open(fname, "r") as f:
         text = f.read()
     return text
-      
+
 setup(name = "krakipy", 
     version = __version__,
     description = "A Python REST-API for the Kraken exchange", 
@@ -13,11 +13,11 @@ setup(name = "krakipy",
     long_description_content_type="text/markdown",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    keywords="kraken api rest cryptocurrency broker finance",
+    keywords="kraken api rest cryptocurrency broker finance exchange",
     classifiers=[
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Intended Audience :: Financial and Insurance Industry",
         "Intended Audience :: Information Technology",
