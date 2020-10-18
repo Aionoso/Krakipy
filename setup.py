@@ -1,5 +1,5 @@
 from setuptools import find_packages, setup
-from src.krakipy.version import __version__
+from src.krakipy.version import __version__, __url__
 
 def read(fname):
     with open(fname, "r") as f:
@@ -8,12 +8,12 @@ def read(fname):
 
 setup(name = "krakipy", 
     version = __version__,
-    description = "A Python REST-API for the Kraken exchange", 
+    description = "A Python API for the Kraken exchange", 
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    keywords="kraken api rest cryptocurrency broker finance exchange",
+    keywords="kraken api rest cryptocurrency broker finance exchange client",
     classifiers=[
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
@@ -29,8 +29,7 @@ setup(name = "krakipy",
     ],
     install_requires=["pandas", "requests"],
     python_requires='>=3.3',
-    url="https://github.com/Aionoso/Krakipy",
-    documentation_url="https://krakipy.readthedocs.io/en/latest/",
+    url=__url__,
     author="Hubertus Wilisch",
     author_email="aionoso-software@outlook.de",
     include_package_data=True,
