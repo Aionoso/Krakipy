@@ -24,6 +24,7 @@ from urllib.parse import urlencode
 from hashlib import sha256, sha512
 from time import time, sleep
 from functools import wraps 
+from pyotp import TOTP
 from hmac import new
 
 from . import version
@@ -60,24 +61,43 @@ class CallRateLimitError(Exception):
 class KrakenAPI(object):
     """The KrakenAPI object stores the authentification information"""
 
-
-    def __init__(self, key="", secret_key="", retry=0.5, limit=20):
+    def __init__(self, key="", secret_key="", use_2fa=None, retry=0.5, limit=20):
         """
         Creates an object that holds the authentification information.
-        The keys are needed to perform private queries
+        The keys are only needed to perform private queries
         
-        :param key: the key to the Kraken API
+        :param key: the key to the Kraken API (optional)
         :type key: str
-        :param secret_key: the secret key to the Kraken API
+        :param secret_key: the secret key to the Kraken API (optional)
         :type secret_key: str
-        :param retry: the amount of time between retries
+        :param use_2fa: used to pass the desired two factor authentification (optional)
+            
+            - None = no two factor authentification (default)
+            - {"static password": your_static_2fa_password} = two factor authentification using a static password method. Example: use_2fa={"static password": "/&59s^wqUU=baQ~W"}
+            - {"2FA App": your_2fa_app_setup_key} = two factor authentification using the Google Authenticator App method. Example: use_2fa={"2FA App": "E452ZYHEX22AXGKIFUGQVPXF"}
+
+        :type use_2fa: None or dict
+        :param retry: the amount of time between retries (optional)
         :type retry: float
-        :param limit: the maximum amount of retries
+        :param limit: the maximum amount of retries (optional)
         :type limit: int
 
         """
+        self.auth_method = None
+        self._authentification = None
+        if use_2fa:
+            assert len(use_2fa) == 1, "There can only be one authentification method per API-token."
+            authentification_methods = {"static password": self._auth_static_password, "2FA App": self._auth_2fa_app}
+            types = authentification_methods.keys()
+            method = list(use_2fa.keys())[0]
+            assert method in types, f"The authentification method called {method} is not supported. Only {types} are supported."
+            assert type(use_2fa[method]) == str, f"The 2FA pasword has to be a string. {use_2fa[method]} is not a string."
+            self.auth_method = method
+            self._authentification = {"method": authentification_methods[method], "password_2fa": use_2fa[method]}
+
         self._key = key
         self._secret = secret_key
+         
         self.uri = "https://api.kraken.com"
         self.apiversion = "0"
         self.session = Session()
@@ -89,6 +109,12 @@ class KrakenAPI(object):
         self.counter = 0
         self.limit = limit
         self.retry = retry
+
+    def _auth_static_password(self):
+        return self._authentification["password_2fa"]
+
+    def _auth_2fa_app(self):
+        return TOTP(self._authentification["password_2fa"]).now()
 
     def __enter__(self):
         return self
@@ -105,7 +131,7 @@ class KrakenAPI(object):
         self.session.close()
 
     def __str__(self):
-        return f"[{__class__.__name__}]\nVERSION:         {self.apiversion}\nURI:             {self.uri}\nAPI-Key:         {'*' * len(self._key) if self._key else '-'}\nAPI-Secretkey:   {'*' * len(self._secret) if self._secret else '-'}\nAPI-Counter:     {self.api_counter}\nRequest-Counter: {self.counter}\nRequest-Limit:   {self.limit}\nRequest-Retry:   {self.retry} s"
+        return f"[{__class__.__name__}]\nVERSION:         {self.apiversion}\nURI:             {self.uri}\nAPI-Key:         {'*' * len(self._key) if self._key else '-'}\nAPI-Secretkey:   {'*' * len(self._secret) if self._secret else '-'}\nAPI-2FA-method:  {self.auth_method}\nAPI-Counter:     {self.api_counter}\nRequest-Counter: {self.counter}\nRequest-Limit:   {self.limit}\nRequest-Retry:   {self.retry} s"
 
     def _nonce(self):
         return int(1000*time())
@@ -119,7 +145,6 @@ class KrakenAPI(object):
 
         return sigdigest.decode()
     
-
     def _query(self, urlpath, data, headers=None, timeout=None):
         if data is None:
             data = {}
@@ -151,6 +176,8 @@ class KrakenAPI(object):
 
         urlpath = "/" + self.apiversion + "/private/" + method
         data["nonce"] = self._nonce()
+        if self._authentification != None:
+            data["otp"] = self._authentification["method"]()
         headers = {"API-Key": self._key, "API-Sign": self._sign(data, urlpath)}
         return self._query(urlpath, data, headers, timeout = timeout)
 
@@ -901,12 +928,12 @@ class KrakenAPI(object):
 
         :type starttm: int
         :param expiretm: expiration time (optional):
-        :type expiretm: int
 
             - 0 = no expiration (default)
             - +<n> = expire <n> seconds from now
             - <n> = unix timestamp of expiration time
-
+            
+        :type expiretm: int
         :param userref: user reference id. 32-bit signed number.  (optional)
         :type userref: str
         :param validate: validate inputs only. do not submit order (optional)

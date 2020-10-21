@@ -27,7 +27,7 @@ setup(name = "krakipy",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent"
     ],
-    install_requires=["pandas", "requests"],
+    install_requires=["pandas", "requests", "pyotp"],
     python_requires='>=3.3',
     url=__url__,
     author="Hubertus Wilisch",
