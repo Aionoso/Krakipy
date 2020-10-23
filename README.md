@@ -2,7 +2,13 @@
 Krakipy is a easy to use Kraken API.
 It uses the [REST-API](https://www.kraken.com/features/api) of the [Kraken.com](https://www.kraken.com) cryptocurrency exchange.
 
-For more information please visit the [krakipy Documentation](https://krakipy.readthedocs.io/en/latest/)
+For more information please visit the [krakipy documentation](https://krakipy.readthedocs.io/en/latest/)
+
+### Features
+- all methods of the kraken rest api are included
+- easy and fast to use
+- two factor authentification support
+- tor suppport
 
 ## Installation
 
