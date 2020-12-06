@@ -13,7 +13,7 @@ setup(name = "krakipy",
     long_description_content_type="text/markdown",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    keywords="kraken api rest cryptocurrency broker finance exchange client tor",
+    keywords="kraken api rest crypto broker finance exchange tor bitcoin",
     classifiers=[
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",

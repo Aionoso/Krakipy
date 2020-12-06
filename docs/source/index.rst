@@ -26,6 +26,10 @@ Get server time
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_server_time
 
+Get system status
+--------------------------------------------------------
+.. automethod:: KrakenAPI.get_system_status
+
 Get asset info
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_asset_info
@@ -132,6 +136,10 @@ Add standard order
 Cancel open order
 --------------------------------------------------------
 .. automethod:: KrakenAPI.cancel_open_order
+
+Cancel all open orders
+--------------------------------------------------------
+.. automethod:: KrakenAPI.cancel_all_open_orders
 
 
 

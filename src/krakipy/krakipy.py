@@ -248,6 +248,8 @@ class KrakenAPI(object):
         Public market data
 
         Returns the time of the Kraken API server.
+        
+        Example: ("Sun,  6 Dec 20 14:12:39 +0000", 1607263959)
 
         :returns: rfc1123 and unixtime
         :rtype: (str, int)
@@ -255,6 +257,33 @@ class KrakenAPI(object):
         res = self._query_public("Time")
         _check_error(res)
         return res["result"]["rfc1123"], res["result"]["unixtime"]
+
+    @callratelimiter(1)
+    def get_system_status(self):
+        """
+        Public market data
+
+        Returns the current system status or trading mode and a timestamp.
+        
+        Example: ("online", "2020-12-06T13:59:55Z")
+
+        :returns: system status and timestamp
+        :rtype: (str, str)
+
+        .. note::
+
+        	Possible status values include:
+
+				- "online" (operational, full trading available)
+				- "cancel_only" (existing orders are cancelable, but new orders cannot be created)
+				- "post_only" (existing orders are cancelable, and only new post limit orders can be submitted)
+				- "limit_only" (existing orders are cancelable, and only new limit orders can be submitted)
+				- "maintenance" (system is offline for maintenance)
+
+        """
+        res = self._query_public("SystemStatus")
+        _check_error(res)
+        return res["result"]["status"], res["result"]["timestamp"]
 
     @callratelimiter(1)
     def get_asset_info(self, info=None, aclass=None, asset=None):
@@ -340,6 +369,16 @@ class KrakenAPI(object):
         """
         data = self._do_private_request("CancelOrder", txid=txid)
         return data["count"], data["pending"]
+
+    def cancel_all_open_orders(self):
+        """
+        Private user trading
+
+        :returns: number of orders canceled
+        :rtype: int
+        """
+        data = self._do_private_request("CancelAll")
+        return int(data["count"])
 
     @callratelimiter(1)
     def get_withdrawal_info(self, asset, key, amount, aclass="currency"):

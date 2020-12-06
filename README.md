@@ -4,6 +4,8 @@ It uses the [REST-API](https://www.kraken.com/features/api) of the [Kraken.com](
 
 For more information please visit the [krakipy documentation](https://krakipy.readthedocs.io/en/latest/)
 
+Updated krakipy to support [Cancel Only Mode](https://blog.kraken.com/post/7022/api-traders-introducing-cancel-only-mode/)
+
 ### Features
 - all methods of the kraken rest api are included
 - easy and fast to use

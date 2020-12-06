@@ -1,6 +1,14 @@
 krakipy change log
 ===========================
 
+[v0.1.5]
+------------------------------
+
+Added
+^^^^^
+* Added system status method
+* Added cancel all method
+
 [v0.1.4]
 ------------------------------
 
