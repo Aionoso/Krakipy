@@ -8,12 +8,12 @@ def read(fname):
 
 setup(name = "krakipy", 
     version = __version__,
-    description = "A Python API for the Kraken exchange", 
+    description = "Updated API For The Kraken Crypto Exchange", 
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    keywords="kraken api rest crypto broker finance exchange tor bitcoin",
+    keywords="kraken api crypto finance tor bitcoin",
     classifiers=[
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
