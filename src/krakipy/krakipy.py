@@ -104,28 +104,28 @@ class KrakenAPI(object):
         Creates an object that holds the authentification information.
         The keys are only needed to perform private queries
         
-        :param key: the key to the Kraken API (optional)
+        :param key: The key to the Kraken API (optional)
         :type key: str
-        :param secret_key: the secret key to the Kraken API (optional)
+        :param secret_key: The secret key to the Kraken API (optional)
         :type secret_key: str
-        :param use_2fa: used to pass the desired two factor authentification (optional)
+        :param use_2fa: Is used to pass the desired two factor authentification (optional)
             
             - None = no two factor authentification (default)
             - {"static password": your_static_2fa_password} = two factor authentification using a static password method. Example: use_2fa={"static password": "/&59s^wqUU=baQ~W"}
             - {"2FA App": your_2fa_app_setup_key} = two factor authentification using the Google Authenticator App method. Example: use_2fa={"2FA App": "E452ZYHEX22AXGKIFUGQVPXF"}
         
         :type use_2fa: None or dict
-        :param use_tor: weither or not to use the tor network for requests (optional)
+        :param use_tor: Weither or not to use the tor network for requests (optional)
 
             - False = use normal requests using the clearnet (default)
             - True = use tor requests using the darknet
 
         :type use_tor: bool
-        :param tor_refresh: amount of requests per session before the IP is changed (optional) default = 5
+        :param tor_refresh: Amount of requests per session before the IP is changed (optional) default = 5
         :type tor_refresh: int
-        :param retry: the amount of time between retries (optional)
+        :param retry: Amount of time between retries in sec (optional)
         :type retry: float
-        :param limit: the maximum amount of retries (optional)
+        :param limit: The maximum amount of retries (optional)
         :type limit: int
         """
         self.auth_method = None
@@ -242,21 +242,27 @@ class KrakenAPI(object):
         _check_error(res)
         return res["result"]
 
+
+
+
+    #Public Market Data
     @callratelimiter(1)
     def get_server_time(self):
         """
         Public market data
 
-        Returns the time of the Kraken API server.
+        Returns The time of the Kraken API server.
         
-        Example: ("Sun,  6 Dec 20 14:12:39 +0000", 1607263959)
 
-        :returns: rfc1123 and unixtime
+        :returns: Rfc1123 and unixtime
         :rtype: (str, int)
+
+        Example: KrakenAPI.get_server_time() -> ("Sun,  6 Dec 20 14:12:39 +0000", 1607263959)
         """
         res = self._query_public("Time")
         _check_error(res)
         return res["result"]["rfc1123"], res["result"]["unixtime"]
+
 
     @callratelimiter(1)
     def get_system_status(self):
@@ -264,50 +270,54 @@ class KrakenAPI(object):
         Public market data
 
         Returns the current system status or trading mode and a timestamp.
-        
-        Example: ("online", "2020-12-06T13:59:55Z")
 
-        :returns: system status and timestamp
+
+        :returns: The system status and timestamp
         :rtype: (str, str)
+
+        Example: KrakenAPI.get_system_status() -> ("online", "2020-12-06T13:59:55Z")
 
         .. note::
 
-        	Possible status values include:
+            Possible status values include:
 
-				- "online" (operational, full trading available)
-				- "cancel_only" (existing orders are cancelable, but new orders cannot be created)
-				- "post_only" (existing orders are cancelable, and only new post limit orders can be submitted)
-				- "limit_only" (existing orders are cancelable, and only new limit orders can be submitted)
-				- "maintenance" (system is offline for maintenance)
+                - "online" (operational, full trading available)
+                - "cancel_only" (existing orders are cancelable, but new orders cannot be created)
+                - "post_only" (existing orders are cancelable, and only new post limit orders can be submitted)
+                - "maintenance" (system is offline for maintenance)
 
         """
         res = self._query_public("SystemStatus")
         _check_error(res)
         return res["result"]["status"], res["result"]["timestamp"]
 
+
     @callratelimiter(1)
-    def get_asset_info(self, info=None, aclass=None, asset=None):
+    def get_asset_info(self, asset=None, aclass=None):
         """
         Public market data
 
-        :param info: the info to retrieve (optional) - default = "all"
-        :type info: str
-        :param aclass: the asset class (optional) - default = "currency"
-        :type aclass: str
-        :param asset: a comma delimited list of assets to get info on (optional) - default = "all"
-        :type asset: str
+        Get information about the assets that are available for deposit, withdrawal, trading and staking.
 
-        :returns: A DataFrame of asset names and their info
+
+        :param asset: Comma delimited list of assets to get info on (optional) - default = "all"
+        :type asset: str
+        :param aclass: Asset class (optional) - default = "currency"
+        :type aclass: str
+
+        :returns: DataFrame of asset names and their info
         :rtype: :py:attr:`pandas.DataFrame`
         """
-        return DataFrame(self._do_public_request("Assets", info=info, aclass = aclass, asset = asset)).T
+        return DataFrame(self._do_public_request("Assets", asset = asset, aclass = aclass)).T
+
 
     @callratelimiter(1)
-    def get_tradable_asset_pairs(self, info=None, pair=None):
+    def get_tradable_asset_pairs(self, pair=None, info=None):
         """
         Public market data
 
-        :param info: the info to retrieve (optional)
+
+        :param info: The info to retrieve (optional)
 
             - info = all info (default)
             - leverage = leverage info
@@ -315,37 +325,339 @@ class KrakenAPI(object):
             - margin = margin info
 
         :type info: str
-        :param pair: comma delimited list of asset pairs to get info on (optional) - default = "all"
+        :param pair: Comma delimited list of asset pairs to get info on (optional) - default = "all"
         :type pair: str
 
-        :returns: A DataFrame of pair names and their info
+        :returns: DataFrame of pair names and their info
         :rtype: :py:attr:`pandas.DataFrame`
         """
         return DataFrame(self._do_public_request("AssetPairs", info=info, pair=pair)).T
+
 
     @callratelimiter(1)
     def get_ticker_information(self, pair):
         """
         Public market data
 
-        :param pair: a comma delimited list of asset pairs to get info on
+
+        :param pair: Comma delimited list of asset pairs to get info on
         :type pair: str
 
-        :returns: A DataFrame of pair names and their ticker info
+        :returns: DataFrame of pair names and their ticker info
         :rtype: :py:attr:`pandas.DataFrame`
+        
+        .. note::
+            
+            Today's prices start at midnight UTC
         """
         return DataFrame(self._do_public_request("Ticker", pair=pair)).T
+
+
+    @callratelimiter(2)
+    def get_ohlc_data(self, pair, interval=1, since=None):
+        """
+        Public market data
+
+        :param pair: Asset pair to get OHLC data for
+        :type pair: str
+        :param interval: The time frame interval in minutes (optional):
+
+            - 1 (default) = 1 minute
+            - 5 = 5 minutes
+            - 15 = 15 minutes
+            - 30 = 30 minutes
+            - 60 = 1 hour
+            - 240 = 4 hours
+            - 1440 = 1 day
+            - 10080 = 1 week
+            - 21600 = 15 days
+
+        :type interval: int
+        :param since: Return committed OHLC data since given id (optional.  exclusive)
+        :type since: int
+
+        :returns: DataFrame of pair name and OHLC data
+        :rtype: :py:attr:`pandas.DataFrame`
+
+        .. note::
+
+            The last entry in the OHLC array is for the current, not-yet-committed frame and will always be present, regardless of the value of since.
+        """
+        res = self._do_public_request("OHLC", pair=pair, interval=interval, since=since)
+        ohlc = DataFrame(res[pair], dtype="float")
+        last = int(res["last"])
+
+        if not ohlc.empty:
+            ohlc.columns = ["time", "open", "high", "low", "close", "vwap", "volume", "count"]
+            ohlc["time"] = ohlc["time"].astype(int)
+        return ohlc, last
+
+
+    @callratelimiter(1)
+    def get_order_book(self, pair, count=100):
+        """
+        Public market data
+
+        :param pair: Asset pair to get market depth for
+        :type pair: str
+        :param count: Maximum number of asks/bids (optional) - default = 100, Range: [1..500]
+        :type count: int
+
+        :returns: Ask and bid DataFrame of pair name and market depth
+        :rtype: (:py:attr:`pandas.DataFrame`, :py:attr:`pandas.DataFrame`)
+        """
+        res = self._do_public_request("Depth", pair=pair, count=count)
+        cols = ["price", "volume", "time"]
+        asks = DataFrame(res[pair]["asks"], columns=cols, dtype="float")
+        bids = DataFrame(res[pair]["bids"], columns=cols, dtype="float")
+        asks["time"] = asks["time"].astype(int)
+        bids["time"] = bids["time"].astype(int)
+        return asks, bids
+
+
+    @callratelimiter(2)
+    def get_recent_trades(self, pair, since=None):
+        """
+        Public market data
+
+        Returns the last 1000 trades by default
+
+
+        :param pair: Asset pair to get trade data for
+        :type pair: str
+        :param since: Return trade data since given id (optional.  exclusive)
+        :type since: int
+
+        :returns: DataFrame of pair name and recent trade data and id to be used as since when polling for new trade data.
+        :rtype: (:py:attr:`pandas.DataFrame`, int)
+        """
+        res = self._do_public_request("Trades", pair=pair, since=since)
+        trades = DataFrame(res[pair])
+        last = int(res["last"])
+
+        if not trades.empty:
+            trades.columns = ["price", "volume", "time", "buy_sell", "market_limit", "misc"]
+            trades = trades.astype({"price": float, "volume": float, "time": int})
+        return trades, last
+
+
+    @callratelimiter(1)
+    def get_recent_spreads(self, pair, since=None):
+        """
+        Public market data
+
+        :param pair: Asset pair to get spread data for
+        :type pair: str
+        :param since: Return trade data since given id (optional.  exclusive)
+        :type since: int
+
+        :returns: DataFrame of pair name and recent spread data and id to be used as since when polling for new spread data
+        :rtype: (:py:attr:`pandas.DataFrame`, int)        
+        """
+        res = self._do_public_request("Spread", pair=pair, since=since)
+        spread = DataFrame(res[pair], columns=["time", "bid", "ask"], dtype="float")
+        last = int(res["last"])
+        spread["time"] = spread.time.astype(int)
+        spread["spread"] = spread.ask - spread.bid
+        return spread, last
+
+
+
+
+    #Private User Data
+    @callratelimiter(1)
+    def get_account_balance(self):
+        """
+        Private user data
+
+        Retrieve all cash balances, net of pending withdrawals.
+
+
+        :returns: DataFrame of asset names and balance amount
+        :rtype: :py:attr:`pandas.DataFrame`
+        """
+        res = self._do_private_request("Balance")
+        balance = DataFrame(res, index=["vol"], dtype="float").T
+        return balance
+
+
+    @callratelimiter(2)
+    def get_trade_balance(self, asset="ZEUR"):
+        """
+        Private user data
+
+        Retrieve a summary of collateral balances, margin position valuations, equity and margin level.
+
+
+        :param asset: Base asset used to determine balance - default = "ZEUR"
+        :type asset: str
+
+        :returns: DataFrame of trade balance info
+        :rtype: :py:attr:`pandas.DataFrame`
+        """
+        res = self._do_private_request("TradeBalance", asset=asset)
+        tradebalance = DataFrame(res, index=[asset], dtype="float").T
+        return tradebalance
+
+
+    @callratelimiter(1)
+    def get_open_orders(self, trades=False, userref=None):
+        """
+        Private user data
+
+        Retrieve information about currently open orders.
+
+
+        :param trades: Whether or not to include trades in output (optional) - default = false
+        :type trades: bool
+        :param userref: Restrict results to given user reference id (optional)
+        :type userref: str
+
+        :returns: DataFrame of open order info with txid as the index
+        :rtype: :py:attr:`pandas.DataFrame`
+        """
+        res = self._do_private_request("OpenOrders", trades=trades, userref=userref)
+        openorders = DataFrame(res["open"]).T
+        if not openorders.empty:
+            openorders[["expiretm", "opentm", "starttm"]] = openorders[["expiretm", "opentm", "starttm"]].astype(int)
+            openorders[["cost", "fee", "price", "vol", "vol_exec"]] = openorders[["cost", "fee", "price", "vol", "vol_exec"]].astype(float)
+        return openorders
+
+
+    @callratelimiter(1)
+    def get_closed_orders(self, trades=False, userref=None, start=None, end=None, ofs=None, closetime=None):
+        """
+        Private user data
+
+        Retrieve information about orders that have been closed (filled or cancelled). 50 results are returned at a time, the most recent by default.
+
+        :param trades: Whether or not to include trades in output (optional) - default = false
+        :type trades: bool
+        :param userref: Restrict results to given user reference id (optional)
+        :type userref: str
+        :param start: Starting unix timestamp or order tx id of results (optional.  exclusive)
+        :type start: int or str
+        :param end: Ending unix timestamp or order tx id of results (optional.  inclusive)
+        :type start: int or str
+        :param ofs: The result offset
+        :type ofs: int
+        :param closetime: Which time to use (optional):
+
+            - open
+            - close
+            - both (default)
+
+        :type closetime: str
+        
+        :returns: DataFrame of of order info and amount of available order info matching criteria
+        :rtype: (:py:attr:`pandas.DataFrame`, int)
+        """
+        res = self._do_private_request("ClosedOrders", trades=trades, userref=userref, start=start, end=end, ofs=ofs, closetime=closetime)
+        closed = DataFrame(res["closed"]).T
+        count = int(res["count"])
+        if not closed.empty:
+            closed[["closetm", "expiretm", "opentm", "starttm"]] = closed[["closetm", "expiretm", "opentm", "starttm"]].astype(int)
+            closed[["cost", "fee", "price", "vol", "vol_exec"]] = closed[["cost", "fee", "price", "vol", "vol_exec"]].astype(float)
+        return closed, count
+
+
+    @callratelimiter(1)
+    def query_orders_info(self, txid, trades=False, userref=None):
+        """
+        Private user data
+
+        Retrieve information about specific orders.
+
+            
+        :param trades: Whether or not to include trades in output (optional) - default = false
+        :type trades: bool
+        :param userref: Restrict results to given user reference id (optional)
+        :type userref: str
+        :param txid: Comma delimited list of transaction ids to query info about (50 maximum)
+        :type txid: str
+
+        :returns: DataFrame of associative orders info
+        :rtype: :py:attr:`pandas.DataFrame`
+        """
+        res = self._do_private_request("QueryOrders", txid=txid, trades=trades, userref=userref)
+        orders = DataFrame(res).T
+
+        if not orders.empty:
+            orders[["closetm", "expiretm", "opentm", "starttm"]] = orders[["closetm", "expiretm", "opentm", "starttm"]].astype(int)
+            orders[["cost", "fee", "price", "vol", "vol_exec"]] = orders[["cost", "fee", "price", "vol", "vol_exec"]].astype(float)
+        return orders
+
+
+    @callratelimiter(2)
+    def get_trades_history(self, trade_type="all", trades=False, start=None, end=None, ofs=None):
+        """
+        Private user data
+
+        Retrieve information about trades/fills. 50 results are returned at a time, the most recent by default.
+
+
+        :param trade_type: type of trade (optional):
+
+            - all = all types (default)
+            - any position = any position (open or closed)
+            - closed position = positions that have been closed
+            - closing position = any trade closing all or part of a position
+            - no position = non-positional trades
+
+        :type trade_type: str
+        :param trades: Whether or not to include trades related to position in output (optional) - default = false
+        :type trades: bool
+        :param start: Starting unix timestamp or order tx id of results (optional.  exclusive)
+        :type start: int or str
+        :param end: Ending unix timestamp or order tx id of results (optional.  inclusive)
+        :type start: int or str
+        :param ofs: Result offset for pagination
+        :type ofs: int
+
+        :returns: DataFrame of trade info and the amount of available trades info matching criteria
+        :rtype: (:py:attr:`pandas.DataFrame`, int)
+        """
+        res = self._do_private_request("TradesHistory", trades=trades, start=start, end=end, ofs=ofs, type=trade_type)
+        trades = DataFrame(res["trades"]).T
+        count = int(res["count"])
+        if not trades.empty:
+            trades[["cost", "fee", "margin", "price", "time", "vol"]] = trades[["cost", "fee", "margin", "price", "time", "vol"]].astype(float)
+        return trades, count
+
+
+    @callratelimiter(2)
+    def query_trades_info(self, txid, trades=False):
+        """
+        Private user data
+
+        Retrieve information about specific trades/fills.
+
+        
+        :param txid: Comma delimited list of transaction ids to query info about (20 maximum)
+        :type txid: str
+        :param trades: Whether or not to include trades related to position in output (optional) - default = false
+        :type trades: bool
+        
+        :returns: DataFrame of associative trades info
+        :rtype: (:py:attr:`pandas.DataFrame`, int)
+        """
+        res = self._do_private_request("QueryTrades", txid=txid, trades=trades)
+        trades = DataFrame(res).T
+        if not trades.empty:
+            trades[["cost", "fee", "margin", "price", "time", "vol"]] = trades[["cost", "fee", "margin", "price", "time", "vol"]].astype(float)
+        return trades
+
 
     @callratelimiter(1)
     def get_open_positions(self, txid=None, docalcs=False, consolidation=None):
         """
         Private user data
 
-        :param txid: comma delimited list of transaction ids to restrict output to
+        :param txid: Comma delimited list of transaction ids to restrict output to
         :type txid: str
-        :param docalcs: whether or not to include profit/loss calculations (optional) - default = False
+        :param docalcs: Whether or not to include profit/loss calculations (optional) - default = False
         :type docalcs: bool
-        :param consolidation: what to consolidate the positions data around (optional) - "market" = will consolidate positions based on market pair
+        :param consolidation: What to consolidate the positions data around (optional) - "market" = will consolidate positions based on market pair
         :type consolidation: str
 
         :returns: A DataFrame of open position info
@@ -357,200 +669,117 @@ class KrakenAPI(object):
         """
         return self._do_private_request("OpenPositions", txid=txid, docalcs=docalcs, consolidation=consolidation)
 
-    def cancel_open_order(self, txid):
-        """
-        Private user trading
 
-        :param txid: transaction id
-        :type txid: str
-
-        :returns: number of orders canceled and weither order(s) is/are pending cancellation
-        :rtype: (int, bool)
+    @callratelimiter(2)
+    def get_ledgers_info(self, asset=None, aclass=None, selection_type="all", start=None, end=None, ofs=None):
         """
-        data = self._do_private_request("CancelOrder", txid=txid)
-        return data["count"], data["pending"]
+        Private user data
 
-    def cancel_all_open_orders(self):
-        """
-        Private user trading
+        Retrieve information about ledger entries. 50 results are returned at a time, the most recent by default.
 
-        :returns: number of orders canceled
-        :rtype: int
-        """
-        data = self._do_private_request("CancelAll")
-        return int(data["count"])
-
-    @callratelimiter(1)
-    def get_withdrawal_info(self, asset, key, amount, aclass="currency"):
-        """
-        Private user funding
         
-        :param asset: asset being withdrawn
+        :param asset: Comma delimited list of assets to restrict output to (optional) - default = "all"
         :type asset: str
-        :param key: withdrawal key name, as set up on your account
-        :type key: str
-        :param amount: amount to withdraw
-        :type amount: float
-        :param aclass: asset class (optional) - default = "currency"
+        :param aclass: Asset class (optional) - default = "currency"
         :type aclass: str
+        :param selection_type: Type of trade (optional):
 
-        :returns: Dictionary of associative withdrawal info
-        :rtype: dict
+            - all (default)
+            - deposit
+            - withdrawal
+            - trade
+            - margin
+
+        :type selection_type: str
+        :param start: Starting unix timestamp or order tx id of results (optional.  exclusive)
+        :type start: int or str
+        :param end: Ending unix timestamp or order tx id of results (optional.  inclusive)
+        :type start: int or str
+        :param ofs: Result offset for pagination
+        :type ofs: int
+
+        :returns: DataFrame of associative ledgers info
+        :rtype: :py:attr:`pandas.DataFrame`
         """
-        return self._do_private_request("WithdrawInfo", asset=asset, aclass=aclass, key=key, amount=amount)
+        res = self._do_private_request("Ledgers", aclass=aclass, asset=asset, type=selection_type, start=start, end=end, ofs=ofs)
+        ledgers = DataFrame(res["ledger"]).T
+        if not ledgers.empty:
+            ledgers[["amount", "balance", "fee"]] = ledgers[["amount", "balance", "fee"]].astype(float)
+            ledgers["time"] = ledgers["time"].astype(int)
+        return ledgers
 
-    def withdraw_funds(self, asset, amount, key, aclass="currency"):
+
+    @callratelimiter(2)
+    def query_ledgers(self, id, trades=False):
         """
-        Private user funding
+        Private user data
 
-        :param asset: asset being withdrawn
-        :type asset: str
-        :param key: withdrawal key name, as set up on your account
-        :type key: str
-        :param amount: amount to withdraw
-        :type amount: float
-        :param aclass: asset class (optional) - default = "currency"
-        :type aclass: str
+        Retrieve information about specific ledger entries.
+
+
+        :param id: Comma delimited list of ledger ids to query info about (20 maximum)
+        :type id: str
+        :param trades: Whether or not to include trades related to position in output
+        :type trades: bool (optional.) - default = False
+
+        :returns: DataFrame of associative ledgers info
+        :rtype: :py:attr:`pandas.DataFrame`        
+        """
+        res = self._do_private_request("QueryLedgers", id=id, trades=trades)
+        ledgers = DataFrame(res).T
+        if not ledgers.empty:
+            ledgers[["amount", "balance", "fee"]] = ledgers[["amount", "balance", "fee"]].astype(float)
+            ledgers["time"] = ledgers["time"].astype(int)
+        return ledgers
+
+
+    @callratelimiter(2)
+    def get_trade_volume(self, pair):
+        """
+        Private user data
+
+        :param pair: Comma delimited list of asset pairs to get fee info on (optional)
+        :type pair: str
         
-        :returns: reference id
-        :rtype: str
+        :returns: The volume currency, current discount volume, DataFrame of fees and DataFrame of maker fees
+        :rtype: (str, float, :py:attr:`pandas.DataFrame`, :py:attr:`pandas.DataFrame`)
+
+        ..note:
+
+            If an asset pair is on a maker/taker fee schedule, the taker side is given in fees and maker side in fees_maker. For pairs not on maker/taker, they will only be given in fees.
         """
-        return self._do_private_request("Withdraw", asset=asset, key=key, amount=float(amount), aclass=aclass)["refid"]
+        res = self._do_private_request("TradeVolume", pair=pair)
 
-    @callratelimiter(1)
-    def get_withdrawal_status(self, asset):
-        """
-        Private user funding
+        currency = res["currency"]
+        volume = float(res["volume"])
+        keys = res.keys()
+        fees = DataFrame(res["fees"]) if "fees" in keys else None
+        fees_maker = DataFrame(res["fees_maker"]) if "fees_maker" in keys else None
+        return currency, volume, fees, fees_maker
 
-        :param asset: asset being withdrawn
-        :type asset: str
-
-        :returns: Dictionary of withdrawal status information
-        :rtype: dict
-        """
-        return self._do_private_request("WithdrawStatus", asset=asset)
-
-    @callratelimiter(1)
-    def request_withdrawal_cancel(self, refid, asset, aclass = "currency"):
-        """
-        Private user funding
-
-        :param asset: asset being withdrawn
-        :type asset: str
-        :param refid: withdrawal reference id
-        :type refid: str
-        :param aclass: asset class (optional) - default = "currency"
-        :type aclass: str
-
-        :returns: True on success:
-        :rtype: bool
-
-        .. note::
-
-            **Cancelation cannot be guaranteed.** This will put in a cancelation request. Depending upon how far along the withdrawal process is, it may not be possible to cancel the withdrawal.
-        """
-        return self._do_private_request("WithdrawCancel", asset=asset, aclass=aclass, refid=refid)
-
-    @callratelimiter(1)
-    def get_deposit_status(self, asset, method, aclass):
-        """
-        Private user funding
-
-        :param asset: asset being deposited
-        :type asset: str
-        :param method: name of the deopsit method
-        :type method: str
-        :param aclass: asset class (optional) - default = "currency"
-        :type aclass: str
-
-        :returns: Dictionary of deposit status information
-        :rtype: dict
-        """
-        return self._do_private_request("DepositStatus", asset=asset)
-
-    @callratelimiter(1)
-    def get_deposit_addresses(self, asset, method, aclass=None, new=False):
-        """
-        Private user funding
-
-        :param asset: asset being deposited
-        :type asset: str
-        :param method: name of the deopsit method
-        :type method: str
-        :param aclass: asset class (optional) - default = "currency"
-        :type aclass: str
-        :param new: whether or not to generate a new address (optional.  default = false)
-        :type new: bool
-
-        :returns: Dictionary of associative deposit addresses
-        :rtype: dict
-        """
-        return self._do_private_request("DepositAddresses", asset=asset, method=method, new=new)
-
-    @callratelimiter(1)
-    def get_deposit_methods(self, asset, aclass=None):
-        """
-        Private user funding
-
-        :param asset: asset being deposited
-        :type asset: str
-        :param aclass: asset class (optional) - default = "currency"
-        :type aclass: str
-
-        :returns: Dictionary of deposit methods:
-        :rtype: dict
-        """
-        return self._do_private_request("DepositMethods", asset=asset, aclass=aclass)
-
-    @callratelimiter(1)
-    def wallet_transfer(self, asset, to_address, from_address, amount):
-        """
-        Private user funding
-
-        :param asset: asset being withdrawn
-        :type asset: str
-        :param to_address: which wallet the funds are being transferred to
-
-            - Futures Wallet (default)
-            - Spot Wallet
-
-        :type to_address: str
-        :param from_address: which wallet the funds are being transferred from
-
-            - Futures Wallet
-            - Spot Wallet (default)
-
-        :type from_address: str
-        :param amount: amount to withdraw
-        :type amount: float
-        
-        :returns: reference id
-        :rtype: str
-        """
-        data = {"asset": asset,"to": to_address, "from": from_address, "amount": amount} 
-        res = self._query_private("WalletTransfer", data)
-        _check_error(res)
-        return res["result"]["refid"]
 
     def request_export_report(self, description, report, data_format="CSV", fields=None, asset=None, starttm=None, endtm=None):
         """
         Private user data
 
-        :param description: report description info
+        Request export of trades or ledgers.
+
+
+        :param description: Report description info
         :type description: str
-        :param report: report type
+        :param report: Report type
 
             - trades
             - ledgers
 
         :type report: str
-        :param data_format: the data format
+        :param data_format: The data format
 
             - CSV (default)
             - TSV
 
         :type data_format: str
-        :param fields: comma delimited list of fields to include in report (optional).  default = "all" 
+        :param fields: Comma delimited list of fields to include in report (optional).  default = "all" 
 
             trades:
 
@@ -577,14 +806,14 @@ class KrakenAPI(object):
                 - vbalance
 
         :type fields: str
-        :param asset: comma delimited list of assets to get info on (optional) - default = "all"
+        :param asset: Comma delimited list of assets to get info on (optional) - default = "all"
         :type asset: str
-        :param starttm: report start unixtime (optional).  default = one year before now
+        :param starttm: Report start unixtime (optional).  default = one year before now
         :type starttm: int
-        :param endtm: report end unixtime (optional).  default = now
+        :param endtm: Report end unixtime (optional).  default = now
         :type endtm: int
 
-        :returns: report id
+        :returns: Report id
         :rtype: str
 
         .. note:: 
@@ -593,12 +822,13 @@ class KrakenAPI(object):
         """
         return self._do_private_request("AddExport", report=report, description=description, format=data_format, fields=fields, asset=asset, starttm=starttm, endtm=endtm)["id"]
 
+
     @callratelimiter(1)
-    def get_export_statuses(self, report):
+    def get_export_report_status(self, report):
         """
         Private user data
 
-        :param report: report type:
+        :param report: Report type:
 
             - trades
             - ledgers
@@ -610,21 +840,45 @@ class KrakenAPI(object):
         """
         return self._do_private_request("ExportStatus", report=report)
 
-    @callratelimiter(1)
-    def remove_export_report(self, remove_type, report_id):
+
+    @callratelimiter(3)
+    def retrieve_export_report(self, report_id, return_raw=False, dir=None):
         """
         Private user data
+        
+        :param report_id: Report id
+        :type report_id: str
+        :param return_raw: Weither or not the report is returned as raw binary (optional) - default = False
+        :type return_raw: bool
+        :param dir: If given a directory the report will be saved there as a zipfile
+        :type dir: str
+        
+        :returns: None
+        """
+        report = self._do_private_request("RetrieveExport", id=report_id)
+        if dir != None:
+            with open("{}Report_{}.zip".format(dir, report_id), "wb") as f:
+                    f.write(report)
+        if return_raw:
+            return report            
 
-        :param remove_type: remove type
+
+    @callratelimiter(1)
+    def delete_export_report(self, report_id, remove_type):
+        """
+        Private user data
+        
+        :param report_id: Report id
+        :type report_id: str
+        :param remove_type: Removal type
 
             - cancel
             - delete
 
         :type remove_type: str
-        :param report_id: report id
-        :type report_id: str
 
-        :returns: returns remove type
+
+        :returns: Returns remove type
         :rtype: bool
 
         .. note::
@@ -633,336 +887,11 @@ class KrakenAPI(object):
         """
         return self._do_private_request("RemoveExport", id=report_id, type=remove_type)
 
-    @callratelimiter(2)
-    def get_ohlc_data(self, pair, interval=1, since=None):
-        """
-        Public market data
-
-        :param pair: a asset pair to get OHLC data for
-        :type pair: str
-        :param interval: the time frame interval in minutes (optional):
-
-            - 1 (default) = 1 minute
-            - 5 = 5 minutes
-            - 15 = 15 minutes
-            - 30 = 30 minutes
-            - 60 = 1 hour
-            - 240 = 4 hours
-            - 1440 = 1 day
-            - 10080 = 1 week
-            - 21600 = 15 days
-
-        :type interval: int
-        :param since: return committed OHLC data since given id (optional.  exclusive)
-        :type since: int
-
-        :returns: A DataFrame of pair name and OHLC data
-        :rtype: :py:attr:`pandas.DataFrame`
-        """
-        res = self._do_public_request("OHLC", pair=pair, interval=interval, since=since)
-        ohlc = DataFrame(res[pair], dtype="float")
-        last = int(res["last"])
-
-        if not ohlc.empty:
-            ohlc.columns = ["time", "open", "high", "low", "close", "vwap", "volume", "count"]
-            ohlc["time"] = ohlc["time"].astype(int)
-        return ohlc, last
-
-    @callratelimiter(1)
-    def get_order_book(self, pair, count=100):
-        """
-        Public market data
-
-        :param pair: asset pair to get market depth for
-        :type pair: str
-        :param count: maximum number of asks/bids (optional) - default = 100
-        :type count: int
-
-        :returns: ask and bid DataFrame of pair name and market depth
-        :rtype: (:py:attr:`pandas.DataFrame`, :py:attr:`pandas.DataFrame`)
-        """
-        res = self._do_public_request("Depth", pair=pair, count=count)
-        cols = ["price", "volume", "time"]
-        asks = DataFrame(res[pair]["asks"], columns=cols, dtype="float")
-        bids = DataFrame(res[pair]["bids"], columns=cols, dtype="float")
-        asks["time"] = asks["time"].astype(int)
-        bids["time"] = bids["time"].astype(int)
-        return asks, bids
-
-    @callratelimiter(2)
-    def get_recent_trades(self, pair, since=None):
-        """
-        Public market data
-
-        :param pair: a asset pair to get trade data for
-        :type pair: str
-        :param since: return trade data since given id (optional.  exclusive)
-        :type since: int
-
-        :returns: DataFrame of pair name and recent trade data and id to be used as since when polling for new trade data.
-        :rtype: (:py:attr:`pandas.DataFrame`, int)
-        """
-        res = self._do_public_request("Trades", pair=pair, since=since)
-        trades = DataFrame(res[pair])
-        last = int(res["last"])
-
-        if not trades.empty:
-            trades.columns = ["price", "volume", "time", "buy_sell", "market_limit", "misc"]
-            trades = trades.astype({"price": float, "volume": float, "time": int})
-        return trades, last
-
-    @callratelimiter(1)
-    def get_recent_spread_data(self, pair, since=None):
-        """
-        Public market data
-
-        :param pair: a asset pair to get spread data for
-        :type pair: str
-        :param since: return trade data since given id (optional.  exclusive)
-        :type since: int
-
-        :returns: DataFrame of pair name and recent spread data and id to be used as since when polling for new spread data
-        :rtype: (:py:attr:`pandas.DataFrame`, int)        
-        """
-        res = self._do_public_request("Spread", pair=pair, since=since)
-        spread = DataFrame(res[pair], columns=["time", "bid", "ask"], dtype="float")
-        last = int(res["last"])
-        spread["time"] = spread.time.astype(int)
-        spread["spread"] = spread.ask - spread.bid
-        return spread, last
-
-    @callratelimiter(1)
-    def get_account_balance(self):
-        """
-        Private user data
-
-        :returns: DataFrame of asset names and balance amount
-        :rtype: :py:attr:`pandas.DataFrame`
-        """
-        res = self._do_private_request("Balance")
-        balance = DataFrame(res, index=["vol"], dtype="float").T
-        return balance
-
-    @callratelimiter(2)
-    def get_trade_balance(self, aclass="currency", asset="ZEUR"):
-        """
-        Private user data
-
-        :param aclass: an asset class (optional) - default = "currency" 
-        :type aclass: str
-        :param asset: a base asset used to determine balance - default = "ZEUR"
-        :type asset: str
-
-        :returns: DataFrame of trade balance info
-        :rtype: :py:attr:`pandas.DataFrame`
-        """
-        res = self._do_private_request("TradeBalance", aclass=aclass, asset=asset)
-        tradebalance = DataFrame(res, index=[asset], dtype="float").T
-        return tradebalance
-
-    @callratelimiter(1)
-    def get_open_orders(self, trades=False, userref=None):
-        """
-        Private user data
-
-        :param trades: whether or not to include trades in output (optional) - default = false
-        :type trades: bool
-        :param userref: restrict results to given user reference id (optional)
-        :type userref: str
-
-        :returns: DataFrame of open order info with txid as the index
-        :rtype: :py:attr:`pandas.DataFrame`
-        """
-        res = self._do_private_request("OpenOrders", trades=trades, userref=userref)
-        openorders = DataFrame(res["open"]).T
-        if not openorders.empty:
-            openorders[["expiretm", "opentm", "starttm"]] = openorders[["expiretm", "opentm", "starttm"]].astype(int)
-            openorders[["cost", "fee", "price", "vol", "vol_exec"]] = openorders[["cost", "fee", "price", "vol", "vol_exec"]].astype(float)
-        return openorders
-
-    @callratelimiter(1)
-    def get_closed_orders(self, trades=False, userref=None, start=None, end=None, ofs=None, closetime=None):
-        """
-        Private user data
-
-        :param trades: whether or not to include trades in output (optional) - default = false
-        :type trades: bool
-        :param userref: restrict results to given user reference id (optional)
-        :type userref: str
-        :param start: starting unix timestamp or order tx id of results (optional.  exclusive)
-        :type start: int or str
-        :param end: ending unix timestamp or order tx id of results (optional.  inclusive)
-        :type start: int or str
-        :param ofs: the result offset
-        :type ofs: int
-        :param closetime: which time to use (optional):
-
-            - open
-            - close
-            - both (default)
-
-        :type closetime: str
-        
-        :returns: DataFrame of of order info and amount of available order info matching criteria
-        :rtype: (:py:attr:`pandas.DataFrame`, int)
-        """
-        res = self._do_private_request("ClosedOrders", trades=trades, userref=userref, start=start, end=end, ofs=ofs, closetime=closetime)
-        closed = DataFrame(res["closed"]).T
-        count = int(res["count"])
-        if not closed.empty:
-            closed[["closetm", "expiretm", "opentm", "starttm"]] = closed[["closetm", "expiretm", "opentm", "starttm"]].astype(int)
-            closed[["cost", "fee", "price", "vol", "vol_exec"]] = closed[["cost", "fee", "price", "vol", "vol_exec"]].astype(float)
-        return closed, count
-
-    @callratelimiter(1)
-    def query_orders_info(self, txid, trades=False, userref=None):
-        """
-        Private user data
-            
-        :param trades: whether or not to include trades in output (optional) - default = false
-        :type trades: bool
-        :param userref: restrict results to given user reference id (optional)
-        :type userref: str
-        :param txid: comma delimited list of transaction ids to query info about (50 maximum)
-        :type txid: str
-
-        :returns: DataFrame of associative orders info
-        :rtype: :py:attr:`pandas.DataFrame`
-        """
-        res = self._do_private_request("QueryOrders", txid=txid, trades=trades, userref=userref)
-        orders = DataFrame(res).T
-
-        if not orders.empty:
-            orders[["closetm", "expiretm", "opentm", "starttm"]] = orders[["closetm", "expiretm", "opentm", "starttm"]].astype(int)
-            orders[["cost", "fee", "price", "vol", "vol_exec"]] = orders[["cost", "fee", "price", "vol", "vol_exec"]].astype(float)
-        return orders
-
-    @callratelimiter(2)
-    def get_trades_history(self, trade_type="all", trades=False, start=None, end=None, ofs=None):
-        """
-        Private user data
-
-        :param trade_type: type of trade (optional):
-
-            - all = all types (default)
-            - any position = any position (open or closed)
-            - closed position = positions that have been closed
-            - closing position = any trade closing all or part of a position
-            - no position = non-positional trades
-
-        :type trade_type: str
-        :param trades: whether or not to include trades related to position in output (optional) - default = false
-        :type trades: bool
-        :param start: starting unix timestamp or order tx id of results (optional.  exclusive)
-        :type start: int or str
-        :param end: ending unix timestamp or order tx id of results (optional.  inclusive)
-        :type start: int or str
-        :param ofs: the result offset
-        :type ofs: int
-
-        :returns: DataFrame of trade info and the amount of available trades info matching criteria
-        :rtype: (:py:attr:`pandas.DataFrame`, int)
-        """
-        res = self._do_private_request("TradesHistory", trades=trades, start=start, end=end, ofs=ofs, type=trade_type)
-        trades = DataFrame(res["trades"]).T
-        count = int(res["count"])
-        if not trades.empty:
-            trades[["cost", "fee", "margin", "price", "time", "vol"]] = trades[["cost", "fee", "margin", "price", "time", "vol"]].astype(float)
-        return trades, count
-
-    @callratelimiter(2)
-    def query_trades_info(self, txid, trades=False):
-        """
-        Private user data
-        
-        :param txid: comma delimited list of transaction ids to query info about (20 maximum)
-        :type txid: str
-        :param trades: whether or not to include trades related to position in output (optional) - default = false
-        :type trades: bool
-        
-        :returns: DataFrame of associative trades info
-        :rtype: (:py:attr:`pandas.DataFrame`, int)
-        """
-        res = self._do_private_request("QueryTrades", txid=txid, trades=trades)
-        trades = DataFrame(res).T
-        if not trades.empty:
-            trades[["cost", "fee", "margin", "price", "time", "vol"]] = trades[["cost", "fee", "margin", "price", "time", "vol"]].astype(float)
-        return trades
-
-    @callratelimiter(2)
-    def get_ledgers_info(self, aclass=None, asset=None, selection_type="all", start=None, end=None, ofs=None):
-        """
-        Private user data
-
-        :param aclass: an asset class (optional) - default = "currency"
-        :type aclass: str
-        :param asset: comma delimited list of assets to restrict output to (optional) - default = "all"
-        :type asset: str
-        :param selection_type: type of trade (optional):
-
-            - all (default)
-            - deposit
-            - withdrawal
-            - trade
-            - margin
-
-        :type selection_type: str
-        :param start: starting unix timestamp or order tx id of results (optional.  exclusive)
-        :type start: int or str
-        :param end: ending unix timestamp or order tx id of results (optional.  inclusive)
-        :type start: int or str
-        :param ofs: the result offset
-        :type ofs: int
-
-        :returns: DataFrame of associative ledgers info
-        :rtype: :py:attr:`pandas.DataFrame`
-        """
-        res = self._do_private_request("Ledgers", aclass=aclass, asset=asset, type=selection_type, start=start, end=end, ofs=ofs)
-        ledgers = DataFrame(res["ledger"]).T
-        if not ledgers.empty:
-            ledgers[["amount", "balance", "fee"]] = ledgers[["amount", "balance", "fee"]].astype(float)
-            ledgers["time"] = ledgers["time"].astype(int)
-        return ledgers
-
-    @callratelimiter(2)
-    def query_ledgers(self, id):
-        """
-        Private user data
-
-        :param id: comma delimited list of ledger ids to query info about (20 maximum)
-        :type id: str
-
-        :returns: DataFrame of associative ledgers info
-        :rtype: :py:attr:`pandas.DataFrame`        
-        """
-        res = self._do_private_request("QueryLedgers", id=id)
-        ledgers = DataFrame(res).T
-        if not ledgers.empty:
-            ledgers[["amount", "balance", "fee"]] = ledgers[["amount", "balance", "fee"]].astype(float)
-            ledgers["time"] = ledgers["time"].astype(int)
-        return ledgers
-
-    @callratelimiter(2)
-    def get_trade_volume(self, pair):
-        """
-        Private user data
-
-        :param pair: comma delimited list of asset pairs to get fee info on (optional)
-        :type pair: str
-        
-        :returns: The volume currency, current discount volume, DataFrame of fees and DataFrame of maker fees
-        :rtype: (str, float, :py:attr:`pandas.DataFrame`, :py:attr:`pandas.DataFrame`)
-        """
-        res = self._do_private_request("TradeVolume", pair=pair)
-
-        currency = res["currency"]
-        volume = float(res["volume"])
-        keys = res.keys()
-        fees = DataFrame(res["fees"]) if "fees" in keys else None
-        fees_maker = DataFrame(res["fees_maker"]) if "fees_maker" in keys else None
-        return currency, volume, fees, fees_maker
+    
 
 
+
+    #Private User Trading
     def add_standard_order(self, pair, type, ordertype, volume, price=None,
                            price2=None, leverage=None, oflags=None, starttm=0,
                            expiretm=0, userref=None, validate=True,
@@ -971,15 +900,15 @@ class KrakenAPI(object):
         """
         Private user trading
 
-        :param pair: asset pair
+        :param pair: Asset pair
         :type pair: str
-        :param type: type of order
+        :param type: Type of order
 
             - buy
             - sell
 
         :type type: str
-        :param ordertype: order type:
+        :param ordertype: Order type:
 
             - market
             - limit (price = limit price)
@@ -995,15 +924,15 @@ class KrakenAPI(object):
             - settle-position
 
         :type ordertype: str
-        :param volume: order volume in lots
+        :param volume: Order volume in lots
         :type volume: float
-        :param price: price (optional.  dependent upon ordertype)
-        :type price: float or int
-        :param price2: secondary price (optional.  dependent upon ordertype)
-        :type price2: float or int
-        :param leverage: amount of leverage desired (optional.  default = none)
+        :param price: Price (optional.  dependent upon ordertype)
+        :type price: float or str
+        :param price2: Secondary price (optional.  dependent upon ordertype)
+        :type price2: float or str
+        :param leverage: Amount of leverage desired (optional.  default = none)
         :type leverage: int
-        :param oflags: comma delimited list of order flags (optional):
+        :param oflags: Comma delimited list of order flags (optional):
 
             - viqc = volume in quote currency (not available for leveraged orders)
             - fcib = prefer fee in base currency
@@ -1012,29 +941,36 @@ class KrakenAPI(object):
             - post = post only order (available when ordertype = limit)
 
         :type oflags: str
-        :param starttm: scheduled start time (optional):
+        :param starttm: Scheduled start time (optional):
 
             - 0 = now (default)
             - +<n> = schedule start time <n> seconds from now
             - <n> = unix timestamp of start time
 
         :type starttm: int
-        :param expiretm: expiration time (optional):
+        :param expiretm: Expiration time (optional):
 
             - 0 = no expiration (default)
             - +<n> = expire <n> seconds from now
             - <n> = unix timestamp of expiration time
             
         :type expiretm: int
-        :param userref: user reference id. 32-bit signed number.  (optional)
+        :param userref: User reference id. 32-bit signed number.  (optional)
         :type userref: str
-        :param validate: validate inputs only. do not submit order (optional)
+        :param validate: Validate inputs only. do not submit order (optional)
         :type validate: bool
-        :param close_ordertype: optional closing order to add to system when order gets filled: order type
+        :param close_ordertype: Optional closing order to add to system when order gets filled: order type
+
+            - limit
+            - stop-loss
+            - take-profit
+            - stop-loss-limit
+            - take-profit-limit
+
         :type close_ordertype: str
-        :param close_price: price
+        :param close_price: Price
         :type close_price: float or int
-        :param  close_price2: secondary price
+        :param  close_price2: Secondary price
         :type close_price2: float or int
         
         :returns: Dictionary of order description info
@@ -1046,6 +982,7 @@ class KrakenAPI(object):
             - Prices can be preceded by +, -, or # to signify the price as a relative amount (with the exception of trailing stops, which are always relative). + adds the amount to the current offered price. - subtracts the amount from the current offered price. # will either add or subtract the amount to the current offered price, depending on the type and order type used. Relative prices can be suffixed with a % to signify the relative amount as a percentage of the offered price.
             - For orders using leverage, 0 can be used for the volume to auto-fill the volume needed to close out your position.
             - If you receive the error "EOrder:Trading agreement required", refer to your API key management page for further details.
+            - Volume can be specified as 0 for closing margin orders to automatically fill the requisite quantity.
         """
         if validate is False:
             validate = None
@@ -1072,27 +1009,304 @@ class KrakenAPI(object):
         _check_error(res)
         return res["result"]
 
+
+    def cancel_order(self, txid):
+        """
+        Private user trading
+
+        Cancel a particular open order (or set of open orders) by txid
+
+        :param txid: Transaction id
+        :type txid: str
+
+        :returns: Number of orders canceled and weither order(s) is/are pending cancellation
+        :rtype: (int, bool)
+        """
+        data = self._do_private_request("CancelOrder", txid=txid)
+        return data["count"], data["pending"]
+
+
+    def cancel_all_orders(self):
+        """
+        Private user trading
+
+        Cancel all open orders
+
+        :returns: Number of orders canceled
+        :rtype: int
+        """
+        data = self._do_private_request("CancelAll")
+        return int(data["count"])
+
+
+    def cancel_all_orders_after(self, timeout):
+        """
+        Private user trading
+
+        This method provides a "Dead Man's Switch" mechanism to protect the client from network malfunction, extreme latency or unexpected matching engine downtime. The client can send a request with a timeout (in seconds), that will start a countdown timer which will cancel all client orders when the timer expires. The client has to keep sending new requests to push back the trigger time, or deactivate the mechanism by specifying a timeout of 0. If the timer expires, all orders are cancelled and then the timer remains disabled until the client provides a new (non-zero) timeout.
+        The recommended use is to make a call every 15 to 30 seconds, providing a timeout of 60 seconds. This allows the client to keep the orders in place in case of a brief disconnection or transient delay, while keeping them safe in case of a network breakdown. It is also recommended to disable the timer ahead of regularly scheduled trading engine maintenance (if the timer is enabled, all orders will be cancelled when the trading engine comes back from downtime - planned or otherwise).
+        
+        
+        :param timeout: Duration (in seconds) to set/extend the timer by
+        :type timeout: int
+
+        :returns: The timestamp when the request was recieved, The timestamp after which all orders will be cancelled, unless the timer is extended or disabled
+        :rtype: str, str
+
+        Example Return: KrakenAPI.cancel_all_orders_after(60) -> ("2021-03-24T17:41:56Z", "2021-03-24T17:42:56Z")
+        """
+        res = self._do_private_request("CancelAllOrdersAfter", timeout=timeout)
+        return res["currentTime"], res["triggertime"]
+
+
+
+
+    #Private User Funding
+    @callratelimiter(1)
+    def get_deposit_methods(self, asset):
+        """
+        Private user funding
+
+        Retrieve methods available for depositing a particular asset.
+
+
+        :param asset: Asset being deposited
+        :type asset: str
+
+        :returns: Dictionary of deposit methods:
+        :rtype: dict
+        """
+        return self._do_private_request("DepositMethods", asset=asset)
+
+
+    @callratelimiter(1)
+    def get_deposit_addresses(self, asset, method, new=False):
+        """
+        Private user funding
+
+        Retrieve (or generate a new) deposit addresses for a particular asset and method.
+
+
+        :param asset: Asset being deposited
+        :type asset: str
+        :param method: Name of the deopsit method
+        :type method: str
+        :param new: Whether or not to generate a new address (optional.) - default = false
+        :type new: bool
+
+        :returns: Dictionary of associative deposit addresses
+        :rtype: dict
+        """
+        return self._do_private_request("DepositAddresses", asset=asset, method=method, new=new)
+
+
+    @callratelimiter(1)
+    def get_deposit_status(self, asset, method=None):
+        """
+        Private user funding
+
+        Retrieve information about recent deposits made.
+
+
+        :param asset: Asset being deposited
+        :type asset: str
+        :param method: Name of the deopsit method (optional)
+        :type method: str
+
+        :returns: Dictionary of deposit status information
+        :rtype: dict
+        """
+        return self._do_private_request("DepositStatus", asset=asset, method=method)
+
+
+    @callratelimiter(1)
+    def get_withdrawal_info(self, asset, key, amount):
+        """
+        Private user funding
+
+        Retrieve fee information about potential withdrawals for a particular asset, key and amount.
+
+        
+        :param asset: Asset being withdrawn
+        :type asset: str
+        :param key: Withdrawal key name, as set up on your account
+        :type key: str
+        :param amount: Amount to withdraw
+        :type amount: float
+
+        :returns: Dictionary of associative withdrawal info
+        :rtype: dict
+        """
+        return self._do_private_request("WithdrawInfo", asset=asset, key=key, amount=amount)
+
+
+    def withdraw_funds(self, asset, key, amount):
+        """
+        Private user funding
+
+        :param asset: Asset being withdrawn
+        :type asset: str
+        :param key: Withdrawal key name, as set up on your account
+        :type key: str
+        :param amount: Amount to withdraw
+        :type amount: float
+        
+        :returns: Reference id
+        :rtype: str
+        """
+        return self._do_private_request("Withdraw", asset=asset, key=key, amount=float(amount))["refid"]
+
+
+    @callratelimiter(1)
+    def get_withdrawal_status(self, asset, method=None):
+        """
+        Private user funding
+
+        Retrieve information about recently requests withdrawals.
+
+
+        :param asset: Asset being withdrawn
+        :type asset: str
+        :param method: Name of the withdrawal method (optional)
+        :type method: str
+
+        :returns: Dictionary of withdrawal status information
+        :rtype: dict
+        """
+        return self._do_private_request("WithdrawStatus", asset=asset, method=method)
+
+
+    @callratelimiter(1)
+    def request_withdrawal_cancel(self, asset, refid):
+        """
+        Private user funding
+        
+        Cancel a recently requested withdrawal, if it has not already been successfully processed.
+
+        :param asset: Asset being withdrawn
+        :type asset: str
+        :param refid: Withdrawal reference id
+        :type refid: str
+
+        :returns: True on success:
+        :rtype: bool
+
+        .. note::
+
+            **Cancelation cannot be guaranteed.** This will put in a cancelation request. Depending upon how far along the withdrawal process is, it may not be possible to cancel the withdrawal.
+        """
+        return self._do_private_request("WithdrawCancel", asset=asset, refid=refid)
+
     
-    @callratelimiter(3)
-    def get_export_report(self, report_id, return_raw=False, path=""):
+    @callratelimiter(1)
+    def wallet_transfer_to_futures(self, asset, amount):
         """
-        Private user data
+        Private user funding
+
+        Transfer from Kraken spot wallet to Kraken Futures holding wallet. Note that a transfer in the other direction must be requested via the Kraken Futures API endpoint.
+
+
+        :param asset: Asset being withdrawn
+        :type asset: str
+        :param amount: Amount to withdraw
+        :type amount: float
         
-        :param report_id: report id
-        :type report_id: str
-        :param return_raw: weither or not the report is returned as raw binary or saved at path (optional) - default = False
-        :type return_raw: bool
-        :param path: the directory the report zipfile is saved
-        :type path: str
-        
-        :returns: None
+        :returns: Reference id
+        :rtype: str
         """
-        report = self._do_private_request("RetrieveExport", id=report_id)
-        if return_raw:
-            return report
-        else:
-            with open("{}Report_{}.zip".format(path, report_id), "wb") as f:
-                f.write(report)
+
+        data = {"asset": asset, "from": "Spot Wallet", "to": "Futures Wallet", "amount": amount} 
+        res = self._query_private("WalletTransfer", data)
+        _check_error(res)
+        return res["result"]["refid"]
+
+    
+
+
+    #Private user staking
+    @callratelimiter(2)
+    def stake_asset(self, asset, amount, method):
+        """
+        Stake an asset from your spot wallet. This operation requires an API key with Withdraw funds permission.
+
+        :param asset: Asset to stake
+        :type asset: str
+
+        :param amount: Amount of the asset to stake
+        :type amount: float
+
+        :param method: Name of the staking option to use (refer to :py:attr:`KrakenAPI.get_stakeable_assets` for the correct method names for each asset)
+        :type method: str
+
+        
+        :returns: Reference ID of the Staking Transaction
+        :rtype: str
+        """
+        res = self._do_private_request("Stake", asset=asset, amount=amount, method=method)
+        return res["refid"]
+
+    @callratelimiter(2)
+    def unstake_asset(self, asset, amount, method):
+        """
+        Unstake an asset from your spot wallet. This operation requires an API key with Withdraw funds permission.
+
+        :param asset: Asset to unstake (asset ID or altname). Must be a valid staking asset (e.g. XBT.M, XTZ.S, ADA.S)
+        :type asset: str
+
+        :param amount: Amount of the asset to unstake
+        :type amount: float
+
+        
+        :returns: Reference ID of the Unstaking Transaction
+        :rtype: str
+        """
+        res = self._do_private_request("Unstake", asset=asset, amount=amount, method=method)
+        return res["refid"]
+
+        
+    @callratelimiter(2)
+    def get_stakeable_assets(self):
+        """
+        Returns the list of assets that the user is able to stake. This operation requires an API key with both Withdraw funds and Query funds permission.
+        
+        :returns: DataFrame of stakeable assets
+        :rtype: :py:attr:`pandas.DataFrame`
+        """
+        res = self._do_private_request("Staking/Assets")
+        return DataFrame(res)
+
+
+    @callratelimiter(2)
+    def get_pending_staking_transactions(self):
+        """
+        Returns the list of pending staking transactions. Once resolved, these transactions will appear on the List of Staking Transactions endpoint.
+        This operation requires an API key with both Query funds and Withdraw funds permissions.
+
+
+        :returns: DataFrame of pending staking transactions
+        :rtype: :py:attr:`pandas.DataFrame`
+        """
+        res = self._do_private_request("Staking/Pending")
+        return DataFrame(res)
+
+
+
+    @callratelimiter(2)
+    def get_staking_transactions(self):
+        """
+        Returns the list of all staking transactions. This endpoint can only return up to 1000 of the most recent transactions.
+        This operation requires an API key with Query funds permissions.
+
+        
+        :returns: DataFrame of all staking transactions
+        :rtype: :py:attr:`pandas.DataFrame`
+        """
+        res = self._do_private_request("Staking/Transactions")
+        return DataFrame(res)
+
+    
+   
+
 
     def _update_api_counter(self):
         now = time()
@@ -1105,7 +1319,7 @@ def add_dtime(df):
     """
     Extra
 
-    Converts the column "time" (unixtime) and adds a new column "dtime" (datetime)
+    Adds a new column "dtime" (datetime) from the column "time" (unixtime)
 
     :param df: A DataFrame with a column "time" in unixtime-format
     :type df: :py:attr:`pandas.DataFrame`
@@ -1120,11 +1334,12 @@ def _check_error(result):
     if len(result["error"]) > 0:
         raise KrakenAPIError(result["error"])
 
+
 def datetime_to_unixtime(dt):
     """
     Extra
 
-    Converts datetime to unixtime
+    Converts from datetime to unixtime
     
     :param dt: datetime object
     :type dt: :py:attr:`datetime.datetime`
@@ -1134,11 +1349,12 @@ def datetime_to_unixtime(dt):
     """
     return int((dt - datetime(1970, 1, 1)).total_seconds())
 
+
 def unixtime_to_datetime(ux):
     """
     Extra
 
-    Converts unixtime to datetime 
+    Converts from unixtime to datetime 
     
     :param ux: unixtime timestamp
     :type ux: int
