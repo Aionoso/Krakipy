@@ -1,15 +1,16 @@
 # Krakipy
-Krakipy is a easy to use Kraken API.
+Krakipy is an easy to use Kraken API.
 It uses the [REST-API](https://www.kraken.com/features/api) of the [Kraken.com](https://www.kraken.com) cryptocurrency exchange.
 
 For more information please visit the [krakipy documentation](https://krakipy.readthedocs.io/en/latest/)
 
-Updated krakipy to support [Cancel Only Mode](https://blog.kraken.com/post/7022/api-traders-introducing-cancel-only-mode/)
+31.07.2021 - Updated to support staking and unstaking via krakipy
+
 
 ### Features
-- all methods of the kraken rest api are included
+- all methods of the kraken rest api are included (Documentation also updated)
 - easy and fast to use
-- two factor authentification support
+- two factor authentification support (static and OTP)
 - tor suppport
 
 ## Installation
