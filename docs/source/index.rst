@@ -9,7 +9,7 @@
 
 
 
-Getting started
+Getting Started
 ========================================================
 
 .. automodule:: krakipy
@@ -19,165 +19,195 @@ Getting started
 
 
 
-Public market data
+Public Market Data
 ========================================================
 
-Get server time
+Get Server Time
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_server_time
 
-Get system status
+Get System Status
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_system_status
 
-Get asset info
+Get Asset Info
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_asset_info
 
-Get tradable asset pairs
+Get Tradable Asset Pairs
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_tradable_asset_pairs
 
-Get ticker information
+Get Ticker Information
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_ticker_information
 
-Get OHLC data
+Get OHLC Data
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_ohlc_data
 
-Get order book
+Get Order Book
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_order_book
 
-Get recent trades
+Get Recent Trades
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_recent_trades
 
-Get recent spread data
+Get Recent Spreads
 --------------------------------------------------------
-.. automethod:: KrakenAPI.get_recent_spread_data
+.. automethod:: KrakenAPI.get_recent_spreads
 
 
 
-Private user data
+Private User Data
 ========================================================
 
-Get account balance
+Get Account Balance
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_account_balance
 
-Get trade balance
+Get Trade Balance
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_trade_balance
 
-Get open orders
+Get Open Orders
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_open_orders
 
-Get closed orders
+Get Closed Orders
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_closed_orders
 
-Query orders info
+Query Orders Info
 --------------------------------------------------------
 .. automethod:: KrakenAPI.query_orders_info
 
-Get trades history
+Get Trades History
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_trades_history
 
-Query trades info
+Query Trades Info
 --------------------------------------------------------
 .. automethod:: KrakenAPI.query_trades_info
 
-Get open positions
+Get Open Positions
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_open_positions
 
-Get ledgers info
+Get Ledgers Info
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_ledgers_info
 
-Query ledgers
+Query Ledgers
 --------------------------------------------------------
 .. automethod:: KrakenAPI.query_ledgers
 
-Get trade volume
+Get Trade Volume
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_trade_volume
 
-Request export report
+Request Export Report
 --------------------------------------------------------
 .. automethod:: KrakenAPI.request_export_report
 
-Get export statuses
+Get Export Report Status
 --------------------------------------------------------
-.. automethod:: KrakenAPI.get_export_statuses
+.. automethod:: KrakenAPI.get_export_report_status
 
-Get export report
+Retrieve Export Report
 --------------------------------------------------------
-.. automethod:: KrakenAPI.get_export_report
+.. automethod:: KrakenAPI.retrieve_export_report
 
-Remove export report
+Delete Export Report
 --------------------------------------------------------
-.. automethod:: KrakenAPI.remove_export_report
+.. automethod:: KrakenAPI.delete_export_report
 
 
 
 
-Private user trading
+Private User Trading
 ========================================================
 
-Add standard order
+Add Standard Order
 --------------------------------------------------------
 .. automethod:: KrakenAPI.add_standard_order
 
-Cancel open order
+Cancel Order
 --------------------------------------------------------
-.. automethod:: KrakenAPI.cancel_open_order
+.. automethod:: KrakenAPI.cancel_order
 
-Cancel all open orders
+Cancel All Orders
 --------------------------------------------------------
-.. automethod:: KrakenAPI.cancel_all_open_orders
+.. automethod:: KrakenAPI.cancel_all_orders
+
+Cancel All Orders After X
+--------------------------------------------------------
+.. automethod:: KrakenAPI.cancel_all_orders_after
 
 
 
 
-Private user funding
+Private User Funding
 ========================================================
 
-Get deposit methods
+Get Deposit Methods
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_deposit_methods
 
-Get deposit addresses
+Get Deposit Addresses
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_deposit_addresses
 
-Get status of recent deposits
+Get Status Of Recent Deposits
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_deposit_status
 
-Get withdrawal information
+Get Withdrawal Information
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_withdrawal_info
 
-Withdraw funds
+Withdraw Funds
 --------------------------------------------------------
 .. automethod:: KrakenAPI.withdraw_funds
 
-Get status of recent withdrawals
+Get Status Of Recent Withdrawals
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_withdrawal_status
 
-Request withdrawal cancelation
+Request Withdrawal Cancelation
 --------------------------------------------------------
 .. automethod:: KrakenAPI.request_withdrawal_cancel
 
 Wallet Transfer
 --------------------------------------------------------
-.. automethod:: KrakenAPI.wallet_transfer
+.. automethod:: KrakenAPI.wallet_transfer_to_futures
+
+
+
+
+Private User Staking
+========================================================
+
+Stake Asset
+--------------------------------------------------------
+.. automethod:: KrakenAPI.stake_asset
+
+Unstake Asset
+--------------------------------------------------------
+.. automethod:: KrakenAPI.unstake_asset
+
+Get Stakeable Assets
+--------------------------------------------------------
+.. automethod:: KrakenAPI.get_stakeable_assets
+
+Get Pending Staking Transactions
+--------------------------------------------------------
+.. automethod:: KrakenAPI.get_pending_staking_transactions
+
+Get Staking Transactions
+--------------------------------------------------------
+.. automethod:: KrakenAPI.get_staking_transactions
 
 
 
