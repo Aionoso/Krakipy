@@ -36,4 +36,4 @@ kr.get_ticker_information("XXBTZEUR")
 The krakipy code is licensed under the GNU GENERAL PUBLIC LICENSE Version 3.
 This program comes with ABSOLUTELY NO WARRANTY
 
-Krakipy  Copyright (C) 2020  Hubertus Wilisch
+Krakipy  Copyright (C) 2020-2021  Hubertus Wilisch
