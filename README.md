@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/krakipy/badge/?version=latest)](https://krakipy.readthedocs.io/en/latest/?badge=latest)
+
 # Krakipy
 Krakipy is an easy to use Kraken API.
 It uses the [REST-API](https://www.kraken.com/features/api) of the [Kraken.com](https://www.kraken.com) cryptocurrency exchange.
@@ -8,7 +10,7 @@ For more information please visit the [krakipy documentation](https://krakipy.re
 
 
 ### Features
-- All methods of the kraken rest api are included (Documentation also updated)
+- All methods of the kraken rest api are included (Krakipy documentation also updated)
 - Easy and fast to use
 - Two factor authentification support (static and OTP)
 - Tor suppport
@@ -53,17 +55,18 @@ Private requests need a valid API key pair to your Kraken account for validation
 ```python
 from krakipy import KrakenAPI
 
-api_key = "********************************************************"
-api_key_secret = "****************************************************************************************"
+api_key = "*************************************************"
+api_key_secret = "*************************************************"
 
 # Create a validated session
 kr = KrakenAPI(api_key, api_key_secret)
 
 # Create a Limit order to buy 420.69 Bitcoin under 100,000.0 EUR/BTC
-kr.add_standard_order("XXBTZEUR", "buy", "limit", volume = 420.69, price = 100000.0, validate=False)
+kr.add_standard_order("XXBTZEUR", "buy", "limit", volume = 420.69, price = 100000.0)
 ->
 {'descr': {'order': 'buy 420.69000000 XBTEUR @ limit 100000.0'},
  'txid': ['OHPCQQ-HRJTQ-ZBDGSE']}
+
 
 # Check your account balance
 kr.get_account_balance()
