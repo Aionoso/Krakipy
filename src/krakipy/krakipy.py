@@ -16,7 +16,7 @@
 # <http://www.gnu.org/licenses/gpl-3.0.txt>.
 
 
-from pandas import to_datetime, DataFrame, Series, concat
+from pandas import to_datetime, DataFrame, Series, concat, json_normalize
 from torpy.http.adapter import TorHttpAdapter
 from datetime import datetime, timedelta
 from requests import Session, HTTPError
@@ -74,8 +74,8 @@ class Dark_Session(object):
             self._guard = self._tor.get_guard()
             adapter = TorHttpAdapter(self._guard, 3, retries=0)
             self.session = Session()
-            self.session.mount('http://', adapter)
-            self.session.mount('https://', adapter)
+            self.session.mount("http://", adapter)
+            self.session.mount("https://", adapter)
         else:
             self.session = Session()
 
@@ -94,6 +94,11 @@ class Dark_Session(object):
             self._guard.close()
         self.session = None
         self._guard = None
+
+
+def _check_error(result):
+    if len(result["error"]) > 0:
+        raise KrakenAPIError(result["error"])
 
 
 class KrakenAPI(object):
@@ -180,7 +185,7 @@ class KrakenAPI(object):
         self.session.close()
 
     def __str__(self):
-        return f"[{__class__.__name__}]\nVERSION:         {self.apiversion}\nURI:             {self.uri}\nAPI-Key:         {'*' * len(self._key) if self._key else '-'}\nAPI-Secretkey:   {'*' * len(self._secret) if self._secret else '-'}\nAPI-2FA-method:  {self.auth_method}\nAPI-Counter:     {self.api_counter}\nUsing Tor:       {self.use_tor}\nRequest-Counter: {self.counter}\nRequest-Limit:   {self.limit}\nRequest-Retry:   {self.retry} s"
+        return f"""[{__class__.__name__}]\nVERSION:         {self.apiversion}\nURI:             {self.uri}\nAPI-Key:         {"*" * len(self._key) if self._key else "-"}\nAPI-Secretkey:   {"*" * len(self._secret) if self._secret else "-"}\nAPI-2FA-method:  {self.auth_method}\nAPI-Counter:     {self.api_counter}\nUsing Tor:       {self.use_tor}\nRequest-Counter: {self.counter}\nRequest-Limit:   {self.limit}\nRequest-Retry:   {self.retry} s"""
 
     def _nonce(self):
         return int(1000*time())
@@ -249,7 +254,7 @@ class KrakenAPI(object):
     @callratelimiter(1)
     def get_server_time(self):
         """
-        Public market data
+        Public Market Data
 
         Returns The time of the Kraken API server.
         
@@ -267,7 +272,7 @@ class KrakenAPI(object):
     @callratelimiter(1)
     def get_system_status(self):
         """
-        Public market data
+        Public Market Data
 
         Returns the current system status or trading mode and a timestamp.
 
@@ -295,7 +300,7 @@ class KrakenAPI(object):
     @callratelimiter(1)
     def get_asset_info(self, asset=None, aclass=None):
         """
-        Public market data
+        Public Market Data
 
         Get information about the assets that are available for deposit, withdrawal, trading and staking.
 
@@ -308,13 +313,15 @@ class KrakenAPI(object):
         :returns: DataFrame of asset names and their info
         :rtype: :py:attr:`pandas.DataFrame`
         """
-        return DataFrame(self._do_public_request("Assets", asset = asset, aclass = aclass)).T
+        info = DataFrame(self._do_public_request("Assets", asset=asset, aclass=aclass), index=["aclass", "altname", "decimals", "display_decimals"]).T
+        info[["decimals", "display_decimals"]] = info[["decimals", "display_decimals"]].astype(int)
+        return info
 
 
     @callratelimiter(1)
     def get_tradable_asset_pairs(self, pair=None, info=None):
         """
-        Public market data
+        Public Market Data
 
 
         :param info: The info to retrieve (optional)
@@ -331,13 +338,17 @@ class KrakenAPI(object):
         :returns: DataFrame of pair names and their info
         :rtype: :py:attr:`pandas.DataFrame`
         """
-        return DataFrame(self._do_public_request("AssetPairs", info=info, pair=pair)).T
+        res = self._do_public_request("AssetPairs", info=info, pair=pair)
+        pairs =  DataFrame(res, index=["altname", "wsname", "aclass_base", "base", "aclass_quote", "quote", "lot", "pair_decimals", "lot_decimals", "lot_multiplier", "leverage_buy", "leverage_sell", "fees", "fees_maker", "fee_volume_currency", "margin_call", "margin_stop", "ordermin"]).T
 
+        pairs[["pair_decimals", "lot_decimals", "margin_call", "margin_stop"]] = pairs[["pair_decimals", "lot_decimals", "margin_call", "margin_stop"]].astype(int)
+        pairs[["lot_multiplier", "ordermin"]] = pairs[["lot_multiplier", "ordermin"]].astype(float)
+        return pairs
 
     @callratelimiter(1)
     def get_ticker_information(self, pair):
         """
-        Public market data
+        Public Market Data
 
 
         :param pair: Comma delimited list of asset pairs to get info on
@@ -348,15 +359,15 @@ class KrakenAPI(object):
         
         .. note::
             
-            Today's prices start at midnight UTC
+            Today"s prices start at midnight UTC
         """
-        return DataFrame(self._do_public_request("Ticker", pair=pair)).T
+        return DataFrame(self._do_public_request("Ticker", pair=pair), index=["a", "b", "c", "h", "l", "o", "p", "t", "v"]).T
 
 
     @callratelimiter(2)
     def get_ohlc_data(self, pair, interval=1, since=None):
         """
-        Public market data
+        Public Market Data
 
         :param pair: Asset pair to get OHLC data for
         :type pair: str
@@ -384,19 +395,16 @@ class KrakenAPI(object):
             The last entry in the OHLC array is for the current, not-yet-committed frame and will always be present, regardless of the value of since.
         """
         res = self._do_public_request("OHLC", pair=pair, interval=interval, since=since)
-        ohlc = DataFrame(res[pair], dtype="float")
-        last = int(res["last"])
+        ohlc = DataFrame(res[pair], columns=["time", "open", "high", "low", "close", "vwap", "volume", "count"], dtype="float")
 
-        if not ohlc.empty:
-            ohlc.columns = ["time", "open", "high", "low", "close", "vwap", "volume", "count"]
-            ohlc["time"] = ohlc["time"].astype(int)
+        last = float(res["last"])
         return ohlc, last
 
 
     @callratelimiter(1)
     def get_order_book(self, pair, count=100):
         """
-        Public market data
+        Public Market Data
 
         :param pair: Asset pair to get market depth for
         :type pair: str
@@ -410,15 +418,13 @@ class KrakenAPI(object):
         cols = ["price", "volume", "time"]
         asks = DataFrame(res[pair]["asks"], columns=cols, dtype="float")
         bids = DataFrame(res[pair]["bids"], columns=cols, dtype="float")
-        asks["time"] = asks["time"].astype(int)
-        bids["time"] = bids["time"].astype(int)
         return asks, bids
 
 
     @callratelimiter(2)
     def get_recent_trades(self, pair, since=None):
         """
-        Public market data
+        Public Market Data
 
         Returns the last 1000 trades by default
 
@@ -432,19 +438,16 @@ class KrakenAPI(object):
         :rtype: (:py:attr:`pandas.DataFrame`, int)
         """
         res = self._do_public_request("Trades", pair=pair, since=since)
-        trades = DataFrame(res[pair])
-        last = int(res["last"])
+        trades = DataFrame(res[pair], columns=["price", "volume", "time", "buy_sell", "market_limit", "misc"], dtype="float")
 
-        if not trades.empty:
-            trades.columns = ["price", "volume", "time", "buy_sell", "market_limit", "misc"]
-            trades = trades.astype({"price": float, "volume": float, "time": int})
+        last = float(res["last"])
         return trades, last
 
 
     @callratelimiter(1)
     def get_recent_spreads(self, pair, since=None):
         """
-        Public market data
+        Public Market Data
 
         :param pair: Asset pair to get spread data for
         :type pair: str
@@ -456,10 +459,12 @@ class KrakenAPI(object):
         """
         res = self._do_public_request("Spread", pair=pair, since=since)
         spread = DataFrame(res[pair], columns=["time", "bid", "ask"], dtype="float")
-        last = int(res["last"])
-        spread["time"] = spread.time.astype(int)
+        spread["time"] = spread.time.astype(float)
         spread["spread"] = spread.ask - spread.bid
+
+        last = float(res["last"])
         return spread, last
+
 
 
 
@@ -468,7 +473,7 @@ class KrakenAPI(object):
     @callratelimiter(1)
     def get_account_balance(self):
         """
-        Private user data
+        Private User Data
 
         Retrieve all cash balances, net of pending withdrawals.
 
@@ -484,7 +489,7 @@ class KrakenAPI(object):
     @callratelimiter(2)
     def get_trade_balance(self, asset="ZEUR"):
         """
-        Private user data
+        Private User Data
 
         Retrieve a summary of collateral balances, margin position valuations, equity and margin level.
 
@@ -496,19 +501,19 @@ class KrakenAPI(object):
         :rtype: :py:attr:`pandas.DataFrame`
         """
         res = self._do_private_request("TradeBalance", asset=asset)
-        tradebalance = DataFrame(res, index=[asset], dtype="float").T
+        tradebalance = DataFrame(res, index=[asset], columns=["eb", "tb", "m", "n", "c", "v", "e", "mf", "ml"], dtype="float")
         return tradebalance
 
 
     @callratelimiter(1)
     def get_open_orders(self, trades=False, userref=None):
         """
-        Private user data
+        Private User Data
 
         Retrieve information about currently open orders.
 
 
-        :param trades: Whether or not to include trades in output (optional) - default = false
+        :param trades: Whether or not to include trades in output (optional) - default = False
         :type trades: bool
         :param userref: Restrict results to given user reference id (optional)
         :type userref: str
@@ -517,21 +522,20 @@ class KrakenAPI(object):
         :rtype: :py:attr:`pandas.DataFrame`
         """
         res = self._do_private_request("OpenOrders", trades=trades, userref=userref)
-        openorders = DataFrame(res["open"]).T
-        if not openorders.empty:
-            openorders[["expiretm", "opentm", "starttm"]] = openorders[["expiretm", "opentm", "starttm"]].astype(int)
-            openorders[["cost", "fee", "price", "vol", "vol_exec"]] = openorders[["cost", "fee", "price", "vol", "vol_exec"]].astype(float)
+        openorders = DataFrame(res["open"], index=["cost", "descr", "expiretm", "fee", "limitprice", "misc", "oflags", "opentm", "price", "refid", "starttm", "status", "stopprice", "userref", "vol", "vol_exec"]).T
+
+        openorders[["expiretm", "opentm", "starttm", "cost", "fee", "price", "vol", "vol_exec", "stopprice", "limitprice"]] = openorders[["expiretm", "opentm", "starttm", "cost", "fee", "price", "vol", "vol_exec", "stopprice", "limitprice"]].astype(float)
         return openorders
 
 
     @callratelimiter(1)
     def get_closed_orders(self, trades=False, userref=None, start=None, end=None, ofs=None, closetime=None):
         """
-        Private user data
+        Private User Data
 
         Retrieve information about orders that have been closed (filled or cancelled). 50 results are returned at a time, the most recent by default.
 
-        :param trades: Whether or not to include trades in output (optional) - default = false
+        :param trades: Whether or not to include trades in output (optional) - default = False
         :type trades: bool
         :param userref: Restrict results to given user reference id (optional)
         :type userref: str
@@ -553,23 +557,22 @@ class KrakenAPI(object):
         :rtype: (:py:attr:`pandas.DataFrame`, int)
         """
         res = self._do_private_request("ClosedOrders", trades=trades, userref=userref, start=start, end=end, ofs=ofs, closetime=closetime)
-        closed = DataFrame(res["closed"]).T
+        closed = DataFrame(res["closed"], index=["refid", "userref", "status", "reason", "opentm", "closetm", "starttm", "expiretm", "descr", "vol", "vol_exec", "cost", "fee", "price", "stopprice", "limitprice", "misc", "oflags", "trades"]).T
+        closed[["closetm", "expiretm", "opentm", "starttm", "cost", "fee", "price", "vol", "vol_exec", "stopprice", "limitprice"]] = closed[["closetm", "expiretm", "opentm", "starttm", "cost", "fee", "price", "vol", "vol_exec", "stopprice", "limitprice"]].astype(float)
+
         count = int(res["count"])
-        if not closed.empty:
-            closed[["closetm", "expiretm", "opentm", "starttm"]] = closed[["closetm", "expiretm", "opentm", "starttm"]].astype(int)
-            closed[["cost", "fee", "price", "vol", "vol_exec"]] = closed[["cost", "fee", "price", "vol", "vol_exec"]].astype(float)
         return closed, count
 
 
     @callratelimiter(1)
     def query_orders_info(self, txid, trades=False, userref=None):
         """
-        Private user data
+        Private User Data
 
         Retrieve information about specific orders.
 
             
-        :param trades: Whether or not to include trades in output (optional) - default = false
+        :param trades: Whether or not to include trades in output (optional) - default = False
         :type trades: bool
         :param userref: Restrict results to given user reference id (optional)
         :type userref: str
@@ -580,18 +583,16 @@ class KrakenAPI(object):
         :rtype: :py:attr:`pandas.DataFrame`
         """
         res = self._do_private_request("QueryOrders", txid=txid, trades=trades, userref=userref)
-        orders = DataFrame(res).T
+        orders = DataFrame(res, index=["closetm", "cost", "descr", "expiretm", "fee", "limitprice", "misc", "oflags", "opentm", "price", "reason", "refid", "starttm", "status", "stopprice", "trades", "userref", "vol", "vol_exec"]).T
 
-        if not orders.empty:
-            orders[["closetm", "expiretm", "opentm", "starttm"]] = orders[["closetm", "expiretm", "opentm", "starttm"]].astype(int)
-            orders[["cost", "fee", "price", "vol", "vol_exec"]] = orders[["cost", "fee", "price", "vol", "vol_exec"]].astype(float)
+        orders[["closetm", "expiretm", "opentm", "starttm", "cost", "fee", "price", "vol", "vol_exec", "stopprice", "limitprice"]] = orders[["closetm", "expiretm", "opentm", "starttm", "cost", "fee", "price", "vol", "vol_exec", "stopprice", "limitprice"]].astype(float)
         return orders
 
 
     @callratelimiter(2)
     def get_trades_history(self, trade_type="all", trades=False, start=None, end=None, ofs=None):
         """
-        Private user data
+        Private User Data
 
         Retrieve information about trades/fills. 50 results are returned at a time, the most recent by default.
 
@@ -605,7 +606,7 @@ class KrakenAPI(object):
             - no position = non-positional trades
 
         :type trade_type: str
-        :param trades: Whether or not to include trades related to position in output (optional) - default = false
+        :param trades: Whether or not to include trades related to position in output (optional) - default = False
         :type trades: bool
         :param start: Starting unix timestamp or order tx id of results (optional.  exclusive)
         :type start: int or str
@@ -618,40 +619,39 @@ class KrakenAPI(object):
         :rtype: (:py:attr:`pandas.DataFrame`, int)
         """
         res = self._do_private_request("TradesHistory", trades=trades, start=start, end=end, ofs=ofs, type=trade_type)
-        trades = DataFrame(res["trades"]).T
+        trades = DataFrame(res["trades"], index=["ordertxid", "postxid", "pair", "time", "type", "ordertype", "price", "cost", "fee", "vol", "margin", "misc"]).T
+        trades[["cost", "fee", "margin", "price", "time", "vol"]] = trades[["cost", "fee", "margin", "price", "time", "vol"]].astype(float)
+
         count = int(res["count"])
-        if not trades.empty:
-            trades[["cost", "fee", "margin", "price", "time", "vol"]] = trades[["cost", "fee", "margin", "price", "time", "vol"]].astype(float)
         return trades, count
 
 
     @callratelimiter(2)
     def query_trades_info(self, txid, trades=False):
         """
-        Private user data
+        Private User Data
 
         Retrieve information about specific trades/fills.
 
         
         :param txid: Comma delimited list of transaction ids to query info about (20 maximum)
         :type txid: str
-        :param trades: Whether or not to include trades related to position in output (optional) - default = false
+        :param trades: Whether or not to include trades related to position in output (optional) - default = False
         :type trades: bool
         
         :returns: DataFrame of associative trades info
-        :rtype: (:py:attr:`pandas.DataFrame`, int)
+        :rtype: :py:attr:`pandas.DataFrame`
         """
         res = self._do_private_request("QueryTrades", txid=txid, trades=trades)
-        trades = DataFrame(res).T
-        if not trades.empty:
-            trades[["cost", "fee", "margin", "price", "time", "vol"]] = trades[["cost", "fee", "margin", "price", "time", "vol"]].astype(float)
+        trades = DataFrame(res, index=["cost", "fee", "margin", "misc", "ordertxid", "ordertype", "pair", "postxid", "price", "time", "type", "vol"]).T
+        trades[["cost", "fee", "margin", "price", "time", "vol"]] = trades[["cost", "fee", "margin", "price", "time", "vol"]].astype(float)
         return trades
 
 
     @callratelimiter(1)
     def get_open_positions(self, txid=None, docalcs=False, consolidation=None):
         """
-        Private user data
+        Private User Data
 
         :param txid: Comma delimited list of transaction ids to restrict output to
         :type txid: str
@@ -667,13 +667,16 @@ class KrakenAPI(object):
 
             Using the consolidation optional field will result in consolidated view of the data being returned.
         """
-        return self._do_private_request("OpenPositions", txid=txid, docalcs=docalcs, consolidation=consolidation)
+        res = self._do_private_request("OpenPositions", txid=txid, docalcs=docalcs, consolidation=consolidation)
+        pos = DataFrame(res, index=["ordertxid", "posstatus", "pair", "time", "type", "ordertype", "cost", "fee", "vol", "vol_closed", "margin", "value", "net", "terms", "rollovertm", "misc", "oflags"]).T
+        pos[["time", "cost", "fee", "vol", "vol_closed", "margin", "value", "net", "rollovertm"]] = pos[["time", "cost", "fee", "vol", "vol_closed", "margin", "value", "net", "rollovertm"]].astype(float)
+        return pos
 
 
     @callratelimiter(2)
     def get_ledgers_info(self, asset=None, aclass=None, selection_type="all", start=None, end=None, ofs=None):
         """
-        Private user data
+        Private User Data
 
         Retrieve information about ledger entries. 50 results are returned at a time, the most recent by default.
 
@@ -702,17 +705,15 @@ class KrakenAPI(object):
         :rtype: :py:attr:`pandas.DataFrame`
         """
         res = self._do_private_request("Ledgers", aclass=aclass, asset=asset, type=selection_type, start=start, end=end, ofs=ofs)
-        ledgers = DataFrame(res["ledger"]).T
-        if not ledgers.empty:
-            ledgers[["amount", "balance", "fee"]] = ledgers[["amount", "balance", "fee"]].astype(float)
-            ledgers["time"] = ledgers["time"].astype(int)
+        ledgers = DataFrame(res["ledger"], index=["refid", "time", "type", "subtype", "aclass", "asset", "amount", "fee", "balance"]).T
+        ledgers[["time", "amount", "balance", "fee"]] = ledgers[["time", "amount", "balance", "fee"]].astype(float)
         return ledgers
 
 
     @callratelimiter(2)
     def query_ledgers(self, id, trades=False):
         """
-        Private user data
+        Private User Data
 
         Retrieve information about specific ledger entries.
 
@@ -726,17 +727,16 @@ class KrakenAPI(object):
         :rtype: :py:attr:`pandas.DataFrame`        
         """
         res = self._do_private_request("QueryLedgers", id=id, trades=trades)
-        ledgers = DataFrame(res).T
-        if not ledgers.empty:
-            ledgers[["amount", "balance", "fee"]] = ledgers[["amount", "balance", "fee"]].astype(float)
-            ledgers["time"] = ledgers["time"].astype(int)
+        ledgers = DataFrame(res, index=["aclass", "amount", "asset", "balance", "fee", "refid", "subtype", "time", "type"]).T
+
+        ledgers[["time", "amount", "balance", "fee"]] = ledgers[["time", "amount", "balance", "fee"]].astype(float)
         return ledgers
 
 
     @callratelimiter(2)
     def get_trade_volume(self, pair):
         """
-        Private user data
+        Private User Data
 
         :param pair: Comma delimited list of asset pairs to get fee info on (optional)
         :type pair: str
@@ -750,17 +750,17 @@ class KrakenAPI(object):
         """
         res = self._do_private_request("TradeVolume", pair=pair)
 
-        currency = res["currency"]
+        currency = str(res["currency"])
         volume = float(res["volume"])
-        keys = res.keys()
-        fees = DataFrame(res["fees"]) if "fees" in keys else None
-        fees_maker = DataFrame(res["fees_maker"]) if "fees_maker" in keys else None
+
+        fees = DataFrame(res.get("fees"), index=["fee", "maxfee", "minfee", "nextfee", "nextvolume", "tiervolume"]).T
+        fees_maker = DataFrame(res.get("fees_maker"), index=["fee", "maxfee", "minfee", "nextfee", "nextvolume", "tiervolume"]).T
         return currency, volume, fees, fees_maker
 
 
     def request_export_report(self, description, report, data_format="CSV", fields=None, asset=None, starttm=None, endtm=None):
         """
-        Private user data
+        Private User Data
 
         Request export of trades or ledgers.
 
@@ -820,13 +820,13 @@ class KrakenAPI(object):
 
             Field options are based on report type.
         """
-        return self._do_private_request("AddExport", report=report, description=description, format=data_format, fields=fields, asset=asset, starttm=starttm, endtm=endtm)["id"]
+        return str(self._do_private_request("AddExport", report=report, description=description, format=data_format, fields=fields, asset=asset, starttm=starttm, endtm=endtm)["id"])
 
 
     @callratelimiter(1)
     def get_export_report_status(self, report):
         """
-        Private user data
+        Private User Data
 
         :param report: Report type:
 
@@ -835,16 +835,19 @@ class KrakenAPI(object):
 
         :type report: str
 
-        :returns: Dictionary of reports and their info
-        :rtype: dict
+        :returns: DataFrame of reports and their info
+        :rtype: :py:attr:`pandas.DataFrame`
         """
-        return self._do_private_request("ExportStatus", report=report)
+        res = self._do_private_request("ExportStatus", report=report)
+        status = DataFrame(res, columns=["id", "descr", "format", "report", "subtype", "status", "flags", "fields", "createdtm", "expiretm", "starttm", "completedtm", "datastarttm", "dataendtm", "aclass", "asset"])
+        status[["flags", "createdtm", "expiretm", "starttm", "completedtm", "datastarttm", "dataendtm"]] = status[["flags", "createdtm", "expiretm", "starttm", "completedtm", "datastarttm", "dataendtm"]].astype(int)
+        return status
 
 
     @callratelimiter(3)
     def retrieve_export_report(self, report_id, return_raw=False, dir=None):
         """
-        Private user data
+        Private User Data
         
         :param report_id: Report id
         :type report_id: str
@@ -853,7 +856,8 @@ class KrakenAPI(object):
         :param dir: If given a directory the report will be saved there as a zipfile
         :type dir: str
         
-        :returns: None
+        :returns: None or the binary of the compressed report.zip file
+        :rtype: None or raw binary
         """
         report = self._do_private_request("RetrieveExport", id=report_id)
         if dir != None:
@@ -866,7 +870,7 @@ class KrakenAPI(object):
     @callratelimiter(1)
     def delete_export_report(self, report_id, remove_type):
         """
-        Private user data
+        Private User Data
         
         :param report_id: Report id
         :type report_id: str
@@ -879,7 +883,7 @@ class KrakenAPI(object):
 
 
         :returns: Returns remove type
-        :rtype: bool
+        :rtype: dict
 
         .. note::
 
@@ -898,7 +902,7 @@ class KrakenAPI(object):
                            close_ordertype=None, close_price=None,
                            close_price2=None, trading_agreement="agree"):
         """
-        Private user trading
+        Private User Trading
 
         :param pair: Asset pair
         :type pair: str
@@ -1007,12 +1011,12 @@ class KrakenAPI(object):
 
         res = self._query_private("AddOrder", data=data)
         _check_error(res)
-        return res["result"]
+        return str(res["result"])
 
 
     def cancel_order(self, txid):
         """
-        Private user trading
+        Private User Trading
 
         Cancel a particular open order (or set of open orders) by txid
 
@@ -1023,12 +1027,12 @@ class KrakenAPI(object):
         :rtype: (int, bool)
         """
         data = self._do_private_request("CancelOrder", txid=txid)
-        return data["count"], data["pending"]
+        return int(data["count"]), data.get("pending")
 
 
     def cancel_all_orders(self):
         """
-        Private user trading
+        Private User Trading
 
         Cancel all open orders
 
@@ -1041,9 +1045,9 @@ class KrakenAPI(object):
 
     def cancel_all_orders_after(self, timeout):
         """
-        Private user trading
+        Private User Trading
 
-        This method provides a "Dead Man's Switch" mechanism to protect the client from network malfunction, extreme latency or unexpected matching engine downtime. The client can send a request with a timeout (in seconds), that will start a countdown timer which will cancel all client orders when the timer expires. The client has to keep sending new requests to push back the trigger time, or deactivate the mechanism by specifying a timeout of 0. If the timer expires, all orders are cancelled and then the timer remains disabled until the client provides a new (non-zero) timeout.
+        This method provides a "Dead Man"s Switch" mechanism to protect the client from network malfunction, extreme latency or unexpected matching engine downtime. The client can send a request with a timeout (in seconds), that will start a countdown timer which will cancel all client orders when the timer expires. The client has to keep sending new requests to push back the trigger time, or deactivate the mechanism by specifying a timeout of 0. If the timer expires, all orders are cancelled and then the timer remains disabled until the client provides a new (non-zero) timeout.
         The recommended use is to make a call every 15 to 30 seconds, providing a timeout of 60 seconds. This allows the client to keep the orders in place in case of a brief disconnection or transient delay, while keeping them safe in case of a network breakdown. It is also recommended to disable the timer ahead of regularly scheduled trading engine maintenance (if the timer is enabled, all orders will be cancelled when the trading engine comes back from downtime - planned or otherwise).
         
         
@@ -1061,11 +1065,12 @@ class KrakenAPI(object):
 
 
 
+
     #Private User Funding
     @callratelimiter(1)
     def get_deposit_methods(self, asset):
         """
-        Private user funding
+        Private User Funding
 
         Retrieve methods available for depositing a particular asset.
 
@@ -1073,16 +1078,19 @@ class KrakenAPI(object):
         :param asset: Asset being deposited
         :type asset: str
 
-        :returns: Dictionary of deposit methods:
-        :rtype: dict
+        :returns: DataFrame of deposit methods
+        :rtype: :py:attr:`pandas.DataFrame`
         """
-        return self._do_private_request("DepositMethods", asset=asset)
+        res = self._do_private_request("DepositMethods", asset=asset)
+        depo = DataFrame(res, columns=["method", "limit", "fee", "gen-address"])
+        depo["fee"] = depo["fee"].astype(float)
+        return depo
 
 
     @callratelimiter(1)
     def get_deposit_addresses(self, asset, method, new=False):
         """
-        Private user funding
+        Private User Funding
 
         Retrieve (or generate a new) deposit addresses for a particular asset and method.
 
@@ -1091,19 +1099,25 @@ class KrakenAPI(object):
         :type asset: str
         :param method: Name of the deopsit method
         :type method: str
-        :param new: Whether or not to generate a new address (optional.) - default = false
+        :param new: Whether or not to generate a new address (optional.) - default = False
         :type new: bool
 
-        :returns: Dictionary of associative deposit addresses
-        :rtype: dict
+        :returns: DataFrame of associative deposit addresses
+        :rtype: :py:attr:`pandas.DataFrame`
         """
-        return self._do_private_request("DepositAddresses", asset=asset, method=method, new=new)
+        res = self._do_private_request("DepositAddresses", asset=asset, method=method, new=new)
+        
+        depo = DataFrame(res, columns=["address", "expiretm", "new"])
+        depo["new"] = depo["new"].fillan(False).astype(bool)
+        depo["expiretm"] = depo["expiretm"].astype(int)
+        return depo
+
 
 
     @callratelimiter(1)
     def get_deposit_status(self, asset, method=None):
         """
-        Private user funding
+        Private User Funding
 
         Retrieve information about recent deposits made.
 
@@ -1113,16 +1127,19 @@ class KrakenAPI(object):
         :param method: Name of the deopsit method (optional)
         :type method: str
 
-        :returns: Dictionary of deposit status information
-        :rtype: dict
+        :returns: DataFrame of deposit status information
+        :rtype: :py:attr:`pandas.DataFrame`
         """
-        return self._do_private_request("DepositStatus", asset=asset, method=method)
+        res = self._do_private_request("DepositStatus", asset=asset, method=method)
+        depo_status = DataFrame(res, columns=["method", "aclass", "asset", "refid", "txid", "info", "amount", "fee", "time", "status"])
+        depo_status[["amount", "fee", "time"]] = depo_status[["amount", "fee", "time"]].astype(float).fillna(0.0)
+        return depo_status
 
 
     @callratelimiter(1)
     def get_withdrawal_info(self, asset, key, amount):
         """
-        Private user funding
+        Private User Funding
 
         Retrieve fee information about potential withdrawals for a particular asset, key and amount.
 
@@ -1134,15 +1151,18 @@ class KrakenAPI(object):
         :param amount: Amount to withdraw
         :type amount: float
 
-        :returns: Dictionary of associative withdrawal info
-        :rtype: dict
+        :returns: DataFrame of associative withdrawal info
+        :rtype: :py:attr:`pandas.DataFrame`
         """
-        return self._do_private_request("WithdrawInfo", asset=asset, key=key, amount=amount)
+        res = self._do_private_request("WithdrawInfo", asset=asset, key=key, amount=amount)
+        wd = DataFrame(res, index=[asset], columns=["method", "limit", "amount", "fee"])
+        wd[["limit", "amount", "fee"]] = wd[["limit", "amount", "fee"]].astype(float)
+        return wd
 
 
     def withdraw_funds(self, asset, key, amount):
         """
-        Private user funding
+        Private User Funding
 
         :param asset: Asset being withdrawn
         :type asset: str
@@ -1154,13 +1174,13 @@ class KrakenAPI(object):
         :returns: Reference id
         :rtype: str
         """
-        return self._do_private_request("Withdraw", asset=asset, key=key, amount=float(amount))["refid"]
+        return str(self._do_private_request("Withdraw", asset=asset, key=key, amount=float(amount))["refid"])
 
 
     @callratelimiter(1)
     def get_withdrawal_status(self, asset, method=None):
         """
-        Private user funding
+        Private User Funding
 
         Retrieve information about recently requests withdrawals.
 
@@ -1170,16 +1190,19 @@ class KrakenAPI(object):
         :param method: Name of the withdrawal method (optional)
         :type method: str
 
-        :returns: Dictionary of withdrawal status information
-        :rtype: dict
+        :returns: DataFrame of withdrawal status information
+        :rtype: :py:attr:`pandas.DataFrame`
         """
-        return self._do_private_request("WithdrawStatus", asset=asset, method=method)
+        res = self._do_private_request("WithdrawStatus", asset=asset, method=method)
+        wd_status = DataFrame(res, columns=["method", "aclass", "asset", "refid", "txid", "info", "amount", "fee", "time", "status", "status-prop"])
+        wd_status[["amount", "fee", "time"]] = wd_status[["amount", "fee", "time"]].astype(float)
+        return wd_status
 
 
     @callratelimiter(1)
     def request_withdrawal_cancel(self, asset, refid):
         """
-        Private user funding
+        Private User Funding
         
         Cancel a recently requested withdrawal, if it has not already been successfully processed.
 
@@ -1188,20 +1211,20 @@ class KrakenAPI(object):
         :param refid: Withdrawal reference id
         :type refid: str
 
-        :returns: True on success:
+        :returns: True on success
         :rtype: bool
 
         .. note::
 
             **Cancelation cannot be guaranteed.** This will put in a cancelation request. Depending upon how far along the withdrawal process is, it may not be possible to cancel the withdrawal.
         """
-        return self._do_private_request("WithdrawCancel", asset=asset, refid=refid)
+        return bool(self._do_private_request("WithdrawCancel", asset=asset, refid=refid))
 
     
     @callratelimiter(1)
     def wallet_transfer_to_futures(self, asset, amount):
         """
-        Private user funding
+        Private User Funding
 
         Transfer from Kraken spot wallet to Kraken Futures holding wallet. Note that a transfer in the other direction must be requested via the Kraken Futures API endpoint.
 
@@ -1218,20 +1241,21 @@ class KrakenAPI(object):
         data = {"asset": asset, "from": "Spot Wallet", "to": "Futures Wallet", "amount": amount} 
         res = self._query_private("WalletTransfer", data)
         _check_error(res)
-        return res["result"]["refid"]
+        return str(res["result"]["refid"])
 
     
 
 
-    #Private user staking
+    #Private User Staking
     @callratelimiter(2)
     def stake_asset(self, asset, amount, method):
         """
+        Private User Staking
+
         Stake an asset from your spot wallet. This operation requires an API key with Withdraw funds permission.
 
         :param asset: Asset to stake
         :type asset: str
-
         :param amount: Amount of the asset to stake
         :type amount: float
 
@@ -1242,17 +1266,17 @@ class KrakenAPI(object):
         :returns: Reference ID of the Staking Transaction
         :rtype: str
         """
-        res = self._do_private_request("Stake", asset=asset, amount=amount, method=method)
-        return res["refid"]
+        return str(self._do_private_request("Stake", asset=asset, amount=amount, method=method)["refid"])
 
     @callratelimiter(2)
-    def unstake_asset(self, asset, amount, method):
+    def unstake_asset(self, asset, amount):
         """
+        Private User Staking
+
         Unstake an asset from your spot wallet. This operation requires an API key with Withdraw funds permission.
 
         :param asset: Asset to unstake (asset ID or altname). Must be a valid staking asset (e.g. XBT.M, XTZ.S, ADA.S)
         :type asset: str
-
         :param amount: Amount of the asset to unstake
         :type amount: float
 
@@ -1260,25 +1284,32 @@ class KrakenAPI(object):
         :returns: Reference ID of the Unstaking Transaction
         :rtype: str
         """
-        res = self._do_private_request("Unstake", asset=asset, amount=amount, method=method)
-        return res["refid"]
+        return str(self._do_private_request("Unstake", asset=asset, amount=amount)["refid"])
 
         
     @callratelimiter(2)
     def get_stakeable_assets(self):
         """
+        Private User Staking
+
         Returns the list of assets that the user is able to stake. This operation requires an API key with both Withdraw funds and Query funds permission.
         
         :returns: DataFrame of stakeable assets
         :rtype: :py:attr:`pandas.DataFrame`
         """
         res = self._do_private_request("Staking/Assets")
-        return DataFrame(res)
+        stakeable = json_normalize(res, sep="_")
+        if stakeable.empty:
+            stakeable = DataFrame(columns=["method", "asset", "staking_asset", "on_chain", "can_stake", "can_unstake", "rewards_reward", "rewards_type", "minimum_amount_staking", "minimum_amount_unstaking"])
+        stakeable[["rewards_reward", "minimum_amount_staking", "minimum_amount_unstaking"]] = stakeable[["rewards_reward", "minimum_amount_staking", "minimum_amount_unstaking"]].astype(float)
+        return stakeable
 
 
     @callratelimiter(2)
     def get_pending_staking_transactions(self):
         """
+        Private User Staking
+
         Returns the list of pending staking transactions. Once resolved, these transactions will appear on the List of Staking Transactions endpoint.
         This operation requires an API key with both Query funds and Withdraw funds permissions.
 
@@ -1287,13 +1318,17 @@ class KrakenAPI(object):
         :rtype: :py:attr:`pandas.DataFrame`
         """
         res = self._do_private_request("Staking/Pending")
-        return DataFrame(res)
+        pend_stk = DataFrame(res, columns=["method", "aclass", "asset", "refid", "amount", "fee", "time", "status", "type"])
+        pend_stk[["amount", "fee", "time"]] = pend_stk[["amount", "fee", "time"]].astype(float)
+        return pend_stk
 
 
 
     @callratelimiter(2)
     def get_staking_transactions(self):
         """
+        Private User Staking
+
         Returns the list of all staking transactions. This endpoint can only return up to 1000 of the most recent transactions.
         This operation requires an API key with Query funds permissions.
 
@@ -1302,7 +1337,9 @@ class KrakenAPI(object):
         :rtype: :py:attr:`pandas.DataFrame`
         """
         res = self._do_private_request("Staking/Transactions")
-        return DataFrame(res)
+        stk = DataFrame(res, columns=["method", "aclass", "asset", "refid", "amount", "fee", "time", "status", "type", "bond_start", "bond_end"])
+        stk[["amount", "fee", "time", "bond_start", "bond_end"]] = stk[["amount", "fee", "time", "bond_start", "bond_end"]].astype(float)
+        return stk
 
     
    
@@ -1329,10 +1366,6 @@ def add_dtime(df):
     """
     df["dtime"] = to_datetime(df.time, unit="s")
     return df
-
-def _check_error(result):
-    if len(result["error"]) > 0:
-        raise KrakenAPIError(result["error"])
 
 
 def datetime_to_unixtime(dt):
