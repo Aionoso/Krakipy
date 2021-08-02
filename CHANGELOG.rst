@@ -1,6 +1,15 @@
 krakipy change log
 ===========================
 
+[v0.1.7]
+------------------------------
+
+Added
+^^^^^
+* changed output format of some functions to be more consistent and stable
+
+* Fixed some Bugs
+
 [v0.1.6]
 ------------------------------
 
