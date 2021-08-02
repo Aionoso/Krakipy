@@ -19,6 +19,7 @@ Getting Started
 
 
 
+
 Public Market Data
 ========================================================
 
@@ -57,6 +58,8 @@ Get Recent Trades
 Get Recent Spreads
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_recent_spreads
+
+
 
 
 
@@ -126,6 +129,7 @@ Delete Export Report
 
 
 
+
 Private User Trading
 ========================================================
 
@@ -144,6 +148,7 @@ Cancel All Orders
 Cancel All Orders After X
 --------------------------------------------------------
 .. automethod:: KrakenAPI.cancel_all_orders_after
+
 
 
 
@@ -186,6 +191,7 @@ Wallet Transfer
 
 
 
+
 Private User Staking
 ========================================================
 
@@ -212,6 +218,7 @@ Get Staking Transactions
 
 
 
+
 Extras
 ========================================================
 
@@ -226,3 +233,4 @@ Datetime to unixtime
 Unixtime to datetime
 --------------------------------------------------------
 .. autofunction:: unixtime_to_datetime
+
