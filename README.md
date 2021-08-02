@@ -1,6 +1,5 @@
-[![Documentation Status](https://readthedocs.org/projects/krakipy/badge/?version=latest)](https://krakipy.readthedocs.io/en/latest/?badge=latest)
-
 # Krakipy
+[![Documentation Status](https://readthedocs.org/projects/krakipy/badge/?version=latest)](https://krakipy.readthedocs.io/en/latest/?badge=latest)
 Krakipy is an easy to use Kraken API.
 It uses the [REST-API](https://www.kraken.com/features/api) of the [Kraken.com](https://www.kraken.com) cryptocurrency exchange.
 
