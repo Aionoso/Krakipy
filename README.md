@@ -1,6 +1,5 @@
 # Krakipy
 
-[![Python](https://img.shields.io/pypi/pyversions/krakipy.svg?style=plastic)](https://badge.fury.io/py/krakipy)
 [![PyPI version](https://badge.fury.io/py/krakipy.svg)](https://badge.fury.io/py/krakipy)
 [![Documentation Status](https://readthedocs.org/projects/krakipy/badge/?version=latest)](https://krakipy.readthedocs.io/en/latest/?badge=latest)
 [![Downloads](https://pepy.tech/badge/krakipy)](https://pepy.tech/project/krakipy)
