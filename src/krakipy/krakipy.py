@@ -57,12 +57,18 @@ def callratelimiter(increment):
     return call
 
 
-class KrakenAPIError(Exception):
-    pass
-class CallRateLimitError(Exception):
-    pass
 class KeyNotSetError(Exception):
+    """This Error indicates that you tried to do a private request but did not set the Kraken API Keys."""
     pass
+
+class KrakenAPIError(Exception):
+    """This Error indicates that in the response to your query had an error message when it was recieved."""
+    pass
+    
+class CallRateLimitError(Exception):
+    """This Error indicates that you sent to many requests in the last 20s."""
+    pass
+
 
 class Dark_Session(object):
     def __init__(self, use_tor=False):
@@ -108,7 +114,7 @@ class KrakenAPI(object):
 
     def __init__(self, key="", secret_key="", use_2fa=None, use_tor=False, tor_refresh=5, retry=0.5, limit=20):
         """
-        Creates an object that holds the authentification information.
+        Creates an object that can hold the authentification information.
         The keys are only needed to perform private queries
         
         :param key: The key to the Kraken API (optional)
@@ -226,7 +232,7 @@ class KrakenAPI(object):
 
     def _query_private(self, method, data=None, timeout=None):
         if not self._key or not self._secret:
-            raise KeyNotSetError("The Key and Secret-Key need to be set to do private queries.")
+            raise KeyNotSetError("The Key and Secret-Key to the API need to be set to do private queries.")
         if data is None:
             data = {}
 
