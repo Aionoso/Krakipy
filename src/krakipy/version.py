@@ -1,4 +1,4 @@
-__version__ = "0.1.7.1"
+__version__ = "0.1.8"
 __author__ = "Hubertus Wilisch"
 __copyright__ = "Copyright 2020-2021 Hubertus Wilisch"
 __license__ = "GNU GPLv3+"
