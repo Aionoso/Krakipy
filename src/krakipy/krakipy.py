@@ -52,7 +52,7 @@ def callratelimiter(increment):
                     sleep(self.retry * increment)
                     self._update_api_counter()
                     continue
-            raise CallRateLimitError(f"Call rate limiter exceeded: counter={self.api_counter} limit={self.limit}")
+            raise CallRateLimitError(f"Call rate limiter exceeded: counter={self.api_counter} limit={self.limit}. Please wait!")
         return retry_decorator
     return call
 
@@ -60,6 +60,8 @@ def callratelimiter(increment):
 class KrakenAPIError(Exception):
     pass
 class CallRateLimitError(Exception):
+    pass
+class KeyNotSetError(Exception):
     pass
 
 class Dark_Session(object):
@@ -224,7 +226,7 @@ class KrakenAPI(object):
 
     def _query_private(self, method, data=None, timeout=None):
         if not self._key or not self._secret:
-            raise Exception("The Key or Secret-Key is not set!")
+            raise KeyNotSetError("The Key and Secret-Key need to be set to do private queries.")
         if data is None:
             data = {}
 
