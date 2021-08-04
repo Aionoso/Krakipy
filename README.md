@@ -3,6 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/krakipy.svg)](https://badge.fury.io/py/krakipy)
 [![Documentation Status](https://readthedocs.org/projects/krakipy/badge/?version=latest)](https://krakipy.readthedocs.io/en/latest/?badge=latest)
 [![Downloads](https://pepy.tech/badge/krakipy)](https://pepy.tech/project/krakipy)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/Aionoso/Krakipy/blob/master/LICENSE)
 [![Donate with Bitcoin](https://en.cryptobadges.io/badge/micro/17ezwEq21iozygQW1HjWq4hExMJPirTRe2)](https://en.cryptobadges.io/donate/17ezwEq21iozygQW1HjWq4hExMJPirTRe2)
 [![Donate with Ethereum](https://en.cryptobadges.io/badge/micro/0x43F7db7d922C4c8E52Fa8033BeAFa64FcB883379)](https://en.cryptobadges.io/donate/0x43F7db7d922C4c8E52Fa8033BeAFa64FcB883379)
 
@@ -40,13 +41,14 @@ from krakipy import KrakenAPI
 # Create a session
 kr = KrakenAPI()
 
-# Bitcoin - EUR
+
+# Get Ticker for Bitcoin/EUR
 kr.get_ticker_information("XXBTZEUR")
 
-# Doge - Tether
+# Get OHLC for Doge/Tether
 kr.get_ohlc_data("XDGUSDT")
 
-# Ether - USD
+# Get Spreads for Ether/USD
 kr.get_recent_spreads("XETHZUSD")
 
 # Check the Kraken API system status
@@ -65,6 +67,7 @@ api_key_secret = "*************************************************"
 
 # Create a validated session
 kr = KrakenAPI(api_key, api_key_secret)
+
 
 # Create a Limit order to buy 420.69 Bitcoin under 100,000.0 EUR/BTC
 kr.add_standard_order("XXBTZEUR", "buy", "limit", volume = 420.69, price = 100000.0)
