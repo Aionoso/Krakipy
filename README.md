@@ -16,7 +16,7 @@ For more information please visit the [krakipy documentation](https://krakipy.re
 
 
 ### Features
-- All methods of the kraken rest api are included (Krakipy documentation also updated)
+- All methods of the Kraken Rest API are included (Krakipy documentation also updated)
 - Easy and fast to use
 - Two factor authentification support (static and OTP)
 - Tor support
@@ -33,7 +33,7 @@ pip install krakipy
 
 ### Public Requests
 
-Public requests dont need API keys
+Public requests dont need API keys.
 
 ```python
 from krakipy import KrakenAPI
@@ -57,7 +57,7 @@ kr.get_system_status()
 
 ### Private Requests
 
-Private requests need a valid API key pair to your Kraken account for validation
+Private requests need a valid API key pair to your Kraken account for validation.
 
 ```python
 from krakipy import KrakenAPI
