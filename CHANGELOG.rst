@@ -1,19 +1,30 @@
 krakipy change log
 ===========================
 
-[v0.1.7.1]
+[v0.1.8]
 ------------------------------
 
 Added
 ^^^^^
-* minor cosmetic and grammar changes 
+* Added Exception documentation
+
+Changed
+^^^^^^^
+* Changed Requirements more precise
+
+[v0.1.7.1]
+------------------------------
+
+Changed
+^^^^^^^
+* Changed minor cosmetic and grammar adjustments
 
 [v0.1.7]
 ------------------------------
 
-Added
-^^^^^
-* changed output format of some functions to be more consistent and stable
+Changed
+^^^^^^^
+* Changed output format of some functions to be more consistent and stable
 
 * Fixed some Bugs
 
@@ -25,8 +36,10 @@ Added
 * Added staking functionality
 * Added cancel all after x method
 
-* changed some function names and parameters to fit the updated API of Kraken
-* changed the retrieve_export_report function to be able to save to zip and return as binary at the same time
+Changed
+^^^^^^^
+* Changed some function names and parameters to fit the updated API of Kraken
+* Changed the retrieve_export_report function to be able to save to zip and return as binary at the same time
 
 [v0.1.5]
 ------------------------------
