@@ -32,7 +32,7 @@ setup(name = "krakipy",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent"
     ],
-    install_requires=["pandas", "requests", "pyotp", "torpy"],
+    install_requires=["pandas>=0.17.0", "requests", "pyotp", "torpy"],
     python_requires='>=3.3',
     url=__url__,
     project_urls={
