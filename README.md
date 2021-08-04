@@ -1,5 +1,10 @@
 # Krakipy
+
+[![Python](https://img.shields.io/pypi/pyversions/krakipy.svg?style=plastic)](https://badge.fury.io/py/krakipy)
+[![PyPI version](https://badge.fury.io/py/krakipy.svg)](https://badge.fury.io/py/krakipy)
 [![Documentation Status](https://readthedocs.org/projects/krakipy/badge/?version=latest)](https://krakipy.readthedocs.io/en/latest/?badge=latest)
+[![Downloads](https://pepy.tech/badge/krakipy)](https://pepy.tech/project/krakipy)
+[![Donate with Ethereum](https://en.cryptobadges.io/badge/micro/0x43F7db7d922C4c8E52Fa8033BeAFa64FcB883379)](https://en.cryptobadges.io/donate/0x43F7db7d922C4c8E52Fa8033BeAFa64FcB883379)
 
 Krakipy is an easy to use Kraken API.
 It uses the [REST-API](https://www.kraken.com/features/api) of the [Kraken.com](https://www.kraken.com) cryptocurrency exchange.
@@ -13,7 +18,7 @@ For more information please visit the [krakipy documentation](https://krakipy.re
 - All methods of the kraken rest api are included (Krakipy documentation also updated)
 - Easy and fast to use
 - Two factor authentification support (static and OTP)
-- Tor suppport
+- Tor support
 
 ## Installation
 
