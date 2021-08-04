@@ -1,5 +1,6 @@
 """ 
-A complete interface to the kraken-api provided by `krakipy`.
+A complete interface to the `Kraken API <https://www.kraken.com/features/api>`_ provided by `Krakipy <https://pypi.org/project/krakipy/>`_.
+
 Usage example:
 
 .. code-block:: python
@@ -11,5 +12,5 @@ Usage example:
 
 """
 from __future__ import absolute_import
-from .krakipy import KrakenAPI, add_dtime, datetime_to_unixtime, unixtime_to_datetime
-__all__ = ["KrakenAPI", "add_dtime", "datetime_to_unixtime", "unixtime_to_datetime"]
+from .krakipy import KrakenAPI, KeyNotSetError, KrakenAPIError, CallRateLimitError, add_dtime, datetime_to_unixtime, unixtime_to_datetime
+__all__ = ["KrakenAPI", "KeyNotSetError", "KrakenAPIError", "CallRateLimitError", "add_dtime", "datetime_to_unixtime", "unixtime_to_datetime"]
