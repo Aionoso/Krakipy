@@ -4,8 +4,7 @@
 [![Documentation Status](https://readthedocs.org/projects/krakipy/badge/?version=latest)](https://krakipy.readthedocs.io/en/latest/?badge=latest)
 [![Downloads](https://pepy.tech/badge/krakipy)](https://pepy.tech/project/krakipy)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/Aionoso/Krakipy/blob/master/LICENSE)
-[![Donate with Bitcoin](https://en.cryptobadges.io/badge/micro/17ezwEq21iozygQW1HjWq4hExMJPirTRe2)](https://en.cryptobadges.io/donate/17ezwEq21iozygQW1HjWq4hExMJPirTRe2)
-[![Donate with Ethereum](https://en.cryptobadges.io/badge/micro/0x43F7db7d922C4c8E52Fa8033BeAFa64FcB883379)](https://en.cryptobadges.io/donate/0x43F7db7d922C4c8E52Fa8033BeAFa64FcB883379)
+
 
 Krakipy is an easy to use Kraken API.
 It uses the [REST-API](https://www.kraken.com/features/api) of the [Kraken.com](https://www.kraken.com) cryptocurrency exchange.
