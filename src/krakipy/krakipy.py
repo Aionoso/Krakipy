@@ -1,19 +1,18 @@
 # This file is part of krakipy.
 #
-# krakipy is free software: you can redistribute it and/or modify it
-# under the terms of the GNU General Public market data License as published
-# by the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+#MIT LICENSE
 #
-# krakipy is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# Lesser General Public market data License for more details.
+#Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+#associated documentation files (the “Software”), to deal in the Software without restriction, including
+#without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+#of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 #
-# You should have received a copy of the GNU Lesser
-# General Public market data LICENSE along with krakipy. If not, see
-# <http://www.gnu.org/licenses/lgpl-3.0.txt> and
-# <http://www.gnu.org/licenses/gpl-3.0.txt>.
+#The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+#NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+#IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+#ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 from pandas import to_datetime, DataFrame, Series, concat, json_normalize
@@ -125,7 +124,7 @@ class KrakenAPI(object):
             
             - None = no two factor authentification (default)
             - {"static password": your_static_2fa_password} = two factor authentification using a static password method. Example: use_2fa={"static password": "/&59s^wqUU=baQ~W"}
-            - {"2FA App": your_2fa_app_setup_key} = two factor authentification using the Google Authenticator App method. Example: use_2fa={"2FA App": "E452ZYHEX22AXGKIFUGQVPXF"}
+            - {"2FA App": your_2fa_app_setup_key} = two factor authentification using OTP passwords like the Google Authenticator App does it. Example: use_2fa={"2FA App": "E452ZYHEX22AXGKIFUGQVPXF"}
         
         :type use_2fa: None or dict
         :param use_tor: Weither or not to use the tor network for requests (optional)
@@ -182,15 +181,21 @@ class KrakenAPI(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.session.close()
+        if self.session is not None:
+            self.session.close()
 
     def __del__(self):
-        self.session.close()
-
+        if self.session is not None:
+            self.session.close()
+        del self.key
+        del self.secret_key
+        del self._authentification
+        
     def close(self):
         """ Closes the session
         """
-        self.session.close()
+        if self.session is not None:
+            self.session.close()
 
     def __str__(self):
         return f"""[{__class__.__name__}]\nVERSION:         {self.apiversion}\nURI:             {self.uri}\nAPI-Key:         {"*" * len(self._key) if self._key else "-"}\nAPI-Secretkey:   {"*" * len(self._secret) if self._secret else "-"}\nAPI-2FA-method:  {self.auth_method}\nAPI-Counter:     {self.api_counter}\nUsing Tor:       {self.use_tor}\nRequest-Counter: {self.counter}\nRequest-Limit:   {self.limit}\nRequest-Retry:   {self.retry} s"""
@@ -485,12 +490,33 @@ class KrakenAPI(object):
 
         Retrieve all cash balances, net of pending withdrawals.
 
-
         :returns: DataFrame of asset names and balance amount
         :rtype: :py:attr:`pandas.DataFrame`
+
+        
+        API Key Permissions Required: **Funds permissions - Query**
         """
         res = self._do_private_request("Balance")
         balance = DataFrame(res, index=["vol"], dtype="float").T
+        return balance
+
+
+    @callratelimiter(1)
+    def get_extended_balance(self):
+        """
+        Private User Data
+
+        Retrieve all extended account balances, including credits and held amounts. Balance available for trading is calculated as: available balance = balance + credit - credit_used - hold_trade
+
+
+        :returns: DataFrame of asset names and balance amount
+        :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Funds permissions - Query**
+        """
+        res = self._do_private_request("BalanceEx")
+        balance = DataFrame(res, dtype="float").T
         return balance
 
 
@@ -507,6 +533,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of trade balance info
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Orders and trades - Query open orders & trades**
         """
         res = self._do_private_request("TradeBalance", asset=asset)
         tradebalance = DataFrame(res, index=[asset], columns=["eb", "tb", "m", "n", "c", "v", "e", "mf", "ml"], dtype="float")
@@ -528,6 +557,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of open order info with txid as the index
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Orders and trades - Query open orders & trades**
         """
         res = self._do_private_request("OpenOrders", trades=trades, userref=userref)
         openorders = DataFrame(res["open"], index=["cost", "descr", "expiretm", "fee", "limitprice", "misc", "oflags", "opentm", "price", "refid", "starttm", "status", "stopprice", "userref", "vol", "vol_exec"]).T
@@ -563,6 +595,9 @@ class KrakenAPI(object):
         
         :returns: DataFrame of of order info and amount of available order info matching criteria
         :rtype: (:py:attr:`pandas.DataFrame`, int)
+
+
+        API Key Permissions Required: **Orders and trades - Query closed orders & trades**
         """
         res = self._do_private_request("ClosedOrders", trades=trades, userref=userref, start=start, end=end, ofs=ofs, closetime=closetime)
         closed = DataFrame(res["closed"], index=["refid", "userref", "status", "reason", "opentm", "closetm", "starttm", "expiretm", "descr", "vol", "vol_exec", "cost", "fee", "price", "stopprice", "limitprice", "misc", "oflags", "trades"]).T
@@ -589,6 +624,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of associative orders info
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Orders and trades - Query open orders & trades** or **Orders and trades - Query closed orders & trades**, depending on status of order
         """
         res = self._do_private_request("QueryOrders", txid=txid, trades=trades, userref=userref)
         orders = DataFrame(res, index=["closetm", "cost", "descr", "expiretm", "fee", "limitprice", "misc", "oflags", "opentm", "price", "reason", "refid", "starttm", "status", "stopprice", "trades", "userref", "vol", "vol_exec"]).T
@@ -625,6 +663,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of trade info and the amount of available trades info matching criteria
         :rtype: (:py:attr:`pandas.DataFrame`, int)
+
+
+        API Key Permissions Required: **Orders and trades - Query closed orders & trades**
         """
         res = self._do_private_request("TradesHistory", trades=trades, start=start, end=end, ofs=ofs, type=trade_type)
         trades = DataFrame(res["trades"], index=["ordertxid", "postxid", "pair", "time", "type", "ordertype", "price", "cost", "fee", "vol", "margin", "misc"]).T
@@ -649,6 +690,9 @@ class KrakenAPI(object):
         
         :returns: DataFrame of associative trades info
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Orders and trades - Query closed orders & trades**
         """
         res = self._do_private_request("QueryTrades", txid=txid, trades=trades)
         trades = DataFrame(res, index=["cost", "fee", "margin", "misc", "ordertxid", "ordertype", "pair", "postxid", "price", "time", "type", "vol"]).T
@@ -670,6 +714,9 @@ class KrakenAPI(object):
 
         :returns: A DataFrame of open position info
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Orders and trades - Query open orders & trades**
 
         .. note::
 
@@ -711,6 +758,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of associative ledgers info
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Data - Query ledger entries**
         """
         res = self._do_private_request("Ledgers", aclass=aclass, asset=asset, type=selection_type, start=start, end=end, ofs=ofs)
         ledgers = DataFrame(res["ledger"], index=["refid", "time", "type", "subtype", "aclass", "asset", "amount", "fee", "balance"]).T
@@ -732,7 +782,10 @@ class KrakenAPI(object):
         :type trades: bool (optional.) - default = False
 
         :returns: DataFrame of associative ledgers info
-        :rtype: :py:attr:`pandas.DataFrame`        
+        :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Data - Query ledger entries**
         """
         res = self._do_private_request("QueryLedgers", id=id, trades=trades)
         ledgers = DataFrame(res, index=["aclass", "amount", "asset", "balance", "fee", "refid", "subtype", "time", "type"]).T
@@ -751,6 +804,9 @@ class KrakenAPI(object):
         
         :returns: The volume currency, current discount volume, DataFrame of fees and DataFrame of maker fees
         :rtype: (str, float, :py:attr:`pandas.DataFrame`, :py:attr:`pandas.DataFrame`)
+
+
+        API Key Permissions Required: **Funds permissions - Query**
 
         ..note:
 
@@ -824,6 +880,9 @@ class KrakenAPI(object):
         :returns: Report id
         :rtype: str
 
+
+        API Key Permissions Required: **Data - Export data**
+
         .. note:: 
 
             Field options are based on report type.
@@ -845,6 +904,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of reports and their info
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Data - Export data**
         """
         res = self._do_private_request("ExportStatus", report=report)
         status = DataFrame(res, columns=["id", "descr", "format", "report", "subtype", "status", "flags", "fields", "createdtm", "expiretm", "starttm", "completedtm", "datastarttm", "dataendtm", "aclass", "asset"])
@@ -866,6 +928,9 @@ class KrakenAPI(object):
         
         :returns: None or the binary of the compressed report.zip file
         :rtype: None or raw binary
+
+
+        API Key Permissions Required: **Data - Export data**
         """
         report = self._do_private_request("RetrieveExport", id=report_id)
         if dir != None:
@@ -893,6 +958,9 @@ class KrakenAPI(object):
         :returns: Returns remove type
         :rtype: dict
 
+
+        API Key Permissions Required: **Data - Export data**
+
         .. note::
 
             The delete remove type can only be used for a report that has already been processed. Use cancel for queued and processing statuses.
@@ -904,9 +972,9 @@ class KrakenAPI(object):
 
 
     #Private User Trading
-    def add_standard_order(self, pair, type, ordertype, volume, price=None,
-                           price2=None, leverage=None, oflags=None, starttm=0,
-                           expiretm=0, userref=None, validate=True,
+    def add_standard_order(self, pair, type, ordertype, volume, displayvol=None, price=None,
+                           price2=None, leverage=None, reduce_only=False, stptype="cancel-newest", oflags=None, starttm=0,
+                           expiretm=0, userref=None, deadline=None, validate=True,
                            close_ordertype=None, close_price=None,
                            close_price2=None, trading_agreement="agree"):
         """
@@ -938,12 +1006,23 @@ class KrakenAPI(object):
         :type ordertype: str
         :param volume: Order volume in lots
         :type volume: float
+        :param displayvol: Used to edit an iceberg order, this is the visible order quantity in terms of the base asset. The rest of the order will be hidden, although the full volume can be filled at any time by any order of that size or larger that matches in the order book. displayvol can only be used with the limit order type, must be greater than 0, and less than volume.
+        :type displayvol: float
         :param price: Price (optional.  dependent upon ordertype)
         :type price: float or str
         :param price2: Secondary price (optional.  dependent upon ordertype)
         :type price2: float or str
         :param leverage: Amount of leverage desired (optional.  default = none)
         :type leverage: int
+        :param reduce_only: If true, order will only reduce a currently open position, not increase it or open a new position. (optional.  default = False)
+        :type reduce_only: boolean
+        :param stptype: Self trade prevention behavior definition (optional. default = "cancel-newest"):
+
+            - cancel-newest - if self trade is triggered, arriving order will be canceled
+            - cancel-oldest - if self trade is triggered, resting order will be canceled
+            - cancel-both - if self trade is triggered, both arriving and resting orders will be canceled
+
+        :type stptype: str
         :param oflags: Comma delimited list of order flags (optional):
 
             - viqc = volume in quote currency (not available for leveraged orders)
@@ -969,6 +1048,8 @@ class KrakenAPI(object):
         :type expiretm: int
         :param userref: User reference id. 32-bit signed number.  (optional)
         :type userref: str
+        :param deadline: RFC3339 timestamp (e.g. "2023-07-01T00:18:45Z") after which this order would be rejected.  (optional)
+        :type deadline: str
         :param validate: Validate inputs only. do not submit order (optional)
         :type validate: bool
         :param close_ordertype: Optional closing order to add to system when order gets filled: order type
@@ -988,6 +1069,9 @@ class KrakenAPI(object):
         :returns: Dictionary of order description info
         :rtype: dict
 
+
+        API Key Permissions Required: **Orders and trades - Create & modify orders**
+
         .. note::
 
             - See Get tradable asset pairs for specifications on asset pair prices, lots, and leverage.
@@ -1002,6 +1086,7 @@ class KrakenAPI(object):
         volume = str(volume)
         price = str(price) if price else None
         price2 = str(price2) if price2 else None
+        displayvol = str(displayvol) if displayvol else None
         leverage = str(leverage) if leverage else None
         close_price = str(close_price) if close_price else None
         close_price2 = str(close_price2) if close_price2 else None
@@ -1022,6 +1107,66 @@ class KrakenAPI(object):
         return str(res["result"])
 
 
+    #Private User Trading
+    def edit_order(self, txid, pair, volume=None, displayvol=None, price=None, price2=None, oflags=None, userref=None, deadline=None, cancel_response=False, validate=True):
+        """
+        Private User Trading
+        
+        :param txid: Transaction id
+        :type txid: str
+        :param pair: Asset pair
+        :type pair: str
+        :param volume: Order volume in lots
+        :type volume: float
+        :param displayvol: Used to edit an iceberg order, this is the visible order quantity in terms of the base asset. The rest of the order will be hidden, although the full volume can be filled at any time by any order of that size or larger that matches in the order book. displayvol can only be used with the limit order type, must be greater than 0, and less than volume.
+        :type displayvol: float
+        :param price: Price (optional.  dependent upon ordertype)
+        :type price: float or str
+        :param price2: Secondary price (optional.  dependent upon ordertype)
+        :type price2: float or str
+        :param oflags: Comma delimited list of order flags (optional):
+
+            - viqc = volume in quote currency (not available for leveraged orders)
+            - fcib = prefer fee in base currency
+            - fciq = prefer fee in quote currency
+            - nompp = no market price protection
+            - post = post only order (available when ordertype = limit)
+
+        :type oflags: str
+        :param userref: User reference id. 32-bit signed number.  (optional)
+        :type userref: str
+        :param deadline: RFC3339 timestamp (e.g. "2023-07-01T00:18:45Z") after which this order would be rejected.  (optional)
+        :type deadline: str
+        :param cancel_response: Used to interpret if client wants to receive pending replace, before the order is completely replaced (optional. Default = False)
+        :type cancel_response: bool
+        :param validate: Validate inputs only. do not submit order (optional)
+        :type validate: bool
+        
+        
+        :returns: Dictionary of order description info
+        :rtype: dict
+
+
+        API Key Permissions Required: **Orders and trades - Create & modify orders**
+        """
+        if validate is False:
+            validate = None
+
+        volume = str(volume)
+        price = str(price) if price else None
+        price2 = str(price2) if price2 else None
+        displayvol = str(displayvol) if displayvol else None
+        close_price = str(close_price) if close_price else None
+        close_price2 = str(close_price2) if close_price2 else None
+
+        data = {arg: value for arg, value in locals().items() if
+                arg != "self" and value is not None}
+
+        res = self._query_private("EditOrder", data=data)
+        _check_error(res)
+        return str(res["result"])
+
+
     def cancel_order(self, txid):
         """
         Private User Trading
@@ -1033,6 +1178,9 @@ class KrakenAPI(object):
 
         :returns: Number of orders canceled and weither order(s) is/are pending cancellation
         :rtype: (int, bool)
+
+
+        API Key Permissions Required: **Orders and trades - Create & modify orders** and **Orders and trades - Cancel & close orders**
         """
         data = self._do_private_request("CancelOrder", txid=txid)
         return int(data["count"]), data.get("pending")
@@ -1046,6 +1194,9 @@ class KrakenAPI(object):
 
         :returns: Number of orders canceled
         :rtype: int
+
+
+        API Key Permissions Required: **Orders and trades - Create & modify orders** and **Orders and trades - Cancel & close orders**
         """
         data = self._do_private_request("CancelAll")
         return int(data["count"])
@@ -1065,10 +1216,32 @@ class KrakenAPI(object):
         :returns: The timestamp when the request was recieved, The timestamp after which all orders will be cancelled, unless the timer is extended or disabled
         :rtype: str, str
 
+
+        API Key Permissions Required: **Orders and trades - Create & modify orders** and **Orders and trades - Cancel & close orders**
+
         Example Return: KrakenAPI.cancel_all_orders_after(60) -> ("2021-03-24T17:41:56Z", "2021-03-24T17:42:56Z")
         """
         res = self._do_private_request("CancelAllOrdersAfter", timeout=timeout)
         return res["currentTime"], res["triggertime"]
+
+
+    def cancel_order_batch(self, orders):
+        """
+        Private User Trading
+
+        Cancel multiple open orders by txid or userref (maximum 50 total unique IDs/references)
+        
+        :param orders: List of open order transaction IDs (txid) or user references (userref), up to a maximum of 50 total unique IDs/references.
+        :type orders: list of str or int
+
+        :returns: Number of orders canceled
+        :rtype: int
+
+
+        API Key Permissions Required: **Orders and trades - Create & modify orders** and **Orders and trades - Cancel & close orders**
+        """
+        res = self._do_private_request("CancelOrderBatch", orders=orders)
+        return int(res["count"])
 
 
 
@@ -1088,6 +1261,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of deposit methods
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Funds permissions - Query** and **Funds permissions - Deposit**
         """
         res = self._do_private_request("DepositMethods", asset=asset)
         depo = DataFrame(res, columns=["method", "limit", "fee", "gen-address"])
@@ -1112,6 +1288,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of associative deposit addresses
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Funds permissions - Query**
         """
         res = self._do_private_request("DepositAddresses", asset=asset, method=method, new=new)
         
@@ -1137,6 +1316,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of deposit status information
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Funds permissions - Query**
         """
         res = self._do_private_request("DepositStatus", asset=asset, method=method)
         depo_status = DataFrame(res, columns=["method", "aclass", "asset", "refid", "txid", "info", "amount", "fee", "time", "status"])
@@ -1161,6 +1343,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of associative withdrawal info
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Funds permissions - Query** and **Funds permissions - Withdraw**
         """
         res = self._do_private_request("WithdrawInfo", asset=asset, key=key, amount=amount)
         wd = DataFrame(res, index=[asset], columns=["method", "limit", "amount", "fee"])
@@ -1181,6 +1366,9 @@ class KrakenAPI(object):
         
         :returns: Reference id
         :rtype: str
+
+
+        API Key Permissions Required: **Funds permissions - Withdraw**
         """
         return str(self._do_private_request("Withdraw", asset=asset, key=key, amount=float(amount))["refid"])
 
@@ -1200,6 +1388,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of withdrawal status information
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Funds permissions - Withdraw** or **Data - Query ledger entries**
         """
         res = self._do_private_request("WithdrawStatus", asset=asset, method=method)
         wd_status = DataFrame(res, columns=["method", "aclass", "asset", "refid", "txid", "info", "amount", "fee", "time", "status", "status-prop"])
@@ -1221,6 +1412,9 @@ class KrakenAPI(object):
 
         :returns: True on success
         :rtype: bool
+
+
+        API Key Permissions Required: **Funds permissions - Withdraw**, unless withdrawal is a **WalletTransfer**, then no permissions are required.
 
         .. note::
 
@@ -1273,6 +1467,9 @@ class KrakenAPI(object):
         
         :returns: Reference ID of the Staking Transaction
         :rtype: str
+
+
+        API Key Permissions Required: **Funds permissions - Withdraw**
         """
         return str(self._do_private_request("Stake", asset=asset, amount=amount, method=method)["refid"])
 
@@ -1291,6 +1488,9 @@ class KrakenAPI(object):
         
         :returns: Reference ID of the Unstaking Transaction
         :rtype: str
+
+
+        API Key Permissions Required: **Funds permissions - Withdraw**
         """
         return str(self._do_private_request("Unstake", asset=asset, amount=amount)["refid"])
 
@@ -1324,6 +1524,9 @@ class KrakenAPI(object):
 
         :returns: DataFrame of pending staking transactions
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Funds permissions - Query**
         """
         res = self._do_private_request("Staking/Pending")
         pend_stk = DataFrame(res, columns=["method", "aclass", "asset", "refid", "amount", "fee", "time", "status", "type"])
@@ -1343,6 +1546,9 @@ class KrakenAPI(object):
         
         :returns: DataFrame of all staking transactions
         :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Funds permissions - Query**
         """
         res = self._do_private_request("Staking/Transactions")
         stk = DataFrame(res, columns=["method", "aclass", "asset", "refid", "amount", "fee", "time", "status", "type", "bond_start", "bond_end"])
