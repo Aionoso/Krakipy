@@ -92,6 +92,10 @@ Get Account Balance
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_account_balance
 
+Get Extended Balance
+--------------------------------------------------------
+.. automethod:: KrakenAPI.get_extended_balance
+
 Get Trade Balance
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_trade_balance
@@ -158,6 +162,10 @@ Add Standard Order
 --------------------------------------------------------
 .. automethod:: KrakenAPI.add_standard_order
 
+Edit Order
+--------------------------------------------------------
+.. automethod:: KrakenAPI.edit_order
+
 Cancel Order
 --------------------------------------------------------
 .. automethod:: KrakenAPI.cancel_order
@@ -169,6 +177,10 @@ Cancel All Orders
 Cancel All Orders After X
 --------------------------------------------------------
 .. automethod:: KrakenAPI.cancel_all_orders_after
+
+Cancel Order Batch
+--------------------------------------------------------
+.. automethod:: KrakenAPI.cancel_order_batch
 
 
 
