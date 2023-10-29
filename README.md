@@ -3,14 +3,14 @@
 [![PyPI version](https://badge.fury.io/py/krakipy.svg)](https://badge.fury.io/py/krakipy)
 [![Documentation Status](https://readthedocs.org/projects/krakipy/badge/?version=latest)](https://krakipy.readthedocs.io/en/latest/?badge=latest)
 [![Downloads](https://pepy.tech/badge/krakipy)](https://pepy.tech/project/krakipy)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/Aionoso/Krakipy/blob/master/LICENSE)
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Aionoso/Krakipy/blob/master/LICENSE)
 
 Krakipy is an easy to use Kraken API.
-It uses the [REST-API](https://www.kraken.com/features/api) of the [Kraken.com](https://www.kraken.com) cryptocurrency exchange.
+It uses the [REST-API](https://docs.kraken.com/rest/#section/General-Usage) of the [Kraken.com](https://www.kraken.com) cryptocurrency exchange.
 
 For more information please visit the [krakipy documentation](https://krakipy.readthedocs.io/en/latest/)
 
+29.10.2023 - Updated krakipy to include new functions and fixed bugs
 31.07.2021 - Updated krakipy to support staking and unstaking
 
 
@@ -68,10 +68,10 @@ api_key_secret = "*************************************************"
 kr = KrakenAPI(api_key, api_key_secret)
 
 
-# Create a Limit order to buy 420.69 Bitcoin under 100,000.0 EUR/BTC
-kr.add_standard_order("XXBTZEUR", "buy", "limit", volume = 420.69, price = 100000.0)
+# Create a Limit order to buy 1.5 Bitcoin under 100,000.0 EUR/BTC
+kr.add_standard_order("XXBTZEUR", "buy", "limit", volume = 1.5, price = 100000.0)
 ->
-{'descr': {'order': 'buy 420.69000000 XBTEUR @ limit 100000.0'},
+{'descr': {'order': 'buy 1.50000000 XBTEUR @ limit 100000.0'},
  'txid': ['OHPCQQ-HRJTQ-ZBDGSE']}
 
 
@@ -90,7 +90,7 @@ kr.retrieve_export_report(report_id, dir="kraken_reports/")
 
 ## License
 
-The krakipy code is licensed under the GNU GENERAL PUBLIC LICENSE Version 3.
+The krakipy code is licensed under the MIT LICENSE.
 This program comes with ABSOLUTELY NO WARRANTY
 
-Krakipy  Copyright (C) 2020-2021  Hubertus Wilisch
+Krakipy Copyright (C) 2020-2023  Hubertus Wilisch

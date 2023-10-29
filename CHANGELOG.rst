@@ -1,6 +1,21 @@
 krakipy change log
 ===========================
 
+[v0.1.9]
+------------------------------
+
+Added
+^^^^^
+* Added get_extended_balance, edit_order, cancel_batch
+
+Changed
+^^^^^^^
+* Changed Documentation to show needed method authentifiaction
+
+Fixed
+^^^^^^^
+* Fixed nullpointer bug
+
 [v0.1.8]
 ------------------------------
 
