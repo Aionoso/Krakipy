@@ -1,6 +1,17 @@
 krakipy change log
 ===========================
 
+[v0.1.10]
+------------------------------
+
+Added
+^^^^^
+* Added get_order_amends, get_withdrawal_methods
+
+Fixed
+^^^^^^^
+* Fixed key delete exception on close
+
 [v0.1.9]
 ------------------------------
 

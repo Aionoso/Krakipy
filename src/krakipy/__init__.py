@@ -1,5 +1,5 @@
 """ 
-A complete interface to the `Kraken API <https://www.kraken.com/features/api>`_ provided by `Krakipy <https://pypi.org/project/krakipy/>`_.
+A complete interface to the `Kraken REST API <https://docs.kraken.com/api/docs/rest-api/get-server-time>`_ provided by `Krakipy <https://pypi.org/project/krakipy/>`_.
 
 Usage example:
 

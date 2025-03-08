@@ -1,0 +1,1756 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Getting Started &mdash; krakipy  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> krakipy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#krakenapi">KrakenAPI</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#error-details">Error Details</a><ul>
+<li><a class="reference internal" href="#keynotseterror">KeyNotSetError</a></li>
+<li><a class="reference internal" href="#krakenapierror">KrakenAPIError</a></li>
+<li><a class="reference internal" href="#callratelimiterror">CallRateLimitError</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#public-market-data">Public Market Data</a><ul>
+<li><a class="reference internal" href="#get-server-time">Get Server Time</a></li>
+<li><a class="reference internal" href="#get-system-status">Get System Status</a></li>
+<li><a class="reference internal" href="#get-asset-info">Get Asset Info</a></li>
+<li><a class="reference internal" href="#get-tradable-asset-pairs">Get Tradable Asset Pairs</a></li>
+<li><a class="reference internal" href="#get-ticker-information">Get Ticker Information</a></li>
+<li><a class="reference internal" href="#get-ohlc-data">Get OHLC Data</a></li>
+<li><a class="reference internal" href="#get-order-book">Get Order Book</a></li>
+<li><a class="reference internal" href="#get-recent-trades">Get Recent Trades</a></li>
+<li><a class="reference internal" href="#get-recent-spreads">Get Recent Spreads</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#private-user-data">Private User Data</a><ul>
+<li><a class="reference internal" href="#get-account-balance">Get Account Balance</a></li>
+<li><a class="reference internal" href="#get-extended-balance">Get Extended Balance</a></li>
+<li><a class="reference internal" href="#get-trade-balance">Get Trade Balance</a></li>
+<li><a class="reference internal" href="#get-open-orders">Get Open Orders</a></li>
+<li><a class="reference internal" href="#get-closed-orders">Get Closed Orders</a></li>
+<li><a class="reference internal" href="#query-orders-info">Query Orders Info</a></li>
+<li><a class="reference internal" href="#get-order-amends">Get Order Amends</a></li>
+<li><a class="reference internal" href="#get-trades-history">Get Trades History</a></li>
+<li><a class="reference internal" href="#query-trades-info">Query Trades Info</a></li>
+<li><a class="reference internal" href="#get-open-positions">Get Open Positions</a></li>
+<li><a class="reference internal" href="#get-ledgers-info">Get Ledgers Info</a></li>
+<li><a class="reference internal" href="#query-ledgers">Query Ledgers</a></li>
+<li><a class="reference internal" href="#get-trade-volume">Get Trade Volume</a></li>
+<li><a class="reference internal" href="#request-export-report">Request Export Report</a></li>
+<li><a class="reference internal" href="#get-export-report-status">Get Export Report Status</a></li>
+<li><a class="reference internal" href="#retrieve-export-report">Retrieve Export Report</a></li>
+<li><a class="reference internal" href="#delete-export-report">Delete Export Report</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#private-user-trading">Private User Trading</a><ul>
+<li><a class="reference internal" href="#add-standard-order">Add Standard Order</a></li>
+<li><a class="reference internal" href="#edit-order">Edit Order</a></li>
+<li><a class="reference internal" href="#cancel-order">Cancel Order</a></li>
+<li><a class="reference internal" href="#cancel-all-orders">Cancel All Orders</a></li>
+<li><a class="reference internal" href="#cancel-all-orders-after-x">Cancel All Orders After X</a></li>
+<li><a class="reference internal" href="#cancel-order-batch">Cancel Order Batch</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#private-user-funding">Private User Funding</a><ul>
+<li><a class="reference internal" href="#get-deposit-methods">Get Deposit Methods</a></li>
+<li><a class="reference internal" href="#get-deposit-addresses">Get Deposit Addresses</a></li>
+<li><a class="reference internal" href="#get-status-of-recent-deposits">Get Status Of Recent Deposits</a></li>
+<li><a class="reference internal" href="#get-withdrawal-information">Get Withdrawal Information</a></li>
+<li><a class="reference internal" href="#get-withdrawal-methods">Get Withdrawal Methods</a></li>
+<li><a class="reference internal" href="#withdraw-funds">Withdraw Funds</a></li>
+<li><a class="reference internal" href="#get-status-of-recent-withdrawals">Get Status Of Recent Withdrawals</a></li>
+<li><a class="reference internal" href="#request-withdrawal-cancelation">Request Withdrawal Cancelation</a></li>
+<li><a class="reference internal" href="#wallet-transfer">Wallet Transfer</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#private-user-staking">Private User Staking</a><ul>
+<li><a class="reference internal" href="#stake-asset">Stake Asset</a></li>
+<li><a class="reference internal" href="#unstake-asset">Unstake Asset</a></li>
+<li><a class="reference internal" href="#get-stakeable-assets">Get Stakeable Assets</a></li>
+<li><a class="reference internal" href="#get-pending-staking-transactions">Get Pending Staking Transactions</a></li>
+<li><a class="reference internal" href="#get-staking-transactions">Get Staking Transactions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#extras">Extras</a><ul>
+<li><a class="reference internal" href="#add-datetime">Add datetime</a></li>
+<li><a class="reference internal" href="#datetime-to-unixtime">Datetime to unixtime</a></li>
+<li><a class="reference internal" href="#unixtime-to-datetime">Unixtime to datetime</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">krakipy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Getting Started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-krakipy">
+<span id="getting-started"></span><h1>Getting Started<a class="headerlink" href="#module-krakipy" title="Permalink to this headline">¶</a></h1>
+<p>A complete interface to the <a class="reference external" href="https://docs.kraken.com/api/docs/rest-api/get-server-time">Kraken REST API</a> provided by <a class="reference external" href="https://pypi.org/project/krakipy/">Krakipy</a>.</p>
+<p>Usage example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">krakipy</span> <span class="kn">import</span> <span class="n">KrakenAPI</span>
+
+<span class="n">kr</span> <span class="o">=</span> <span class="n">KrakenAPI</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">kr</span><span class="o">.</span><span class="n">get_trade_volume</span><span class="p">(</span><span class="s2">&quot;ZEUR&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="krakenapi">
+<h2>KrakenAPI<a class="headerlink" href="#krakenapi" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">krakipy.</span></span><span class="sig-name descname"><span class="pre">KrakenAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_2fa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tor_refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI" title="Permalink to this definition">¶</a></dt>
+<dd><p>The KrakenAPI object stores the authentification information</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_2fa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tor_refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an object that can hold the authentification information.
+The keys are only needed to perform private queries</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – The key to the Kraken API (optional)</p></li>
+<li><p><strong>secret_key</strong> (<em>str</em>) – The secret key to the Kraken API (optional)</p></li>
+<li><p><strong>use_2fa</strong> (<em>None</em><em> or </em><em>dict</em>) – <p>Is used to pass the desired two factor authentification (optional)</p>
+<ul>
+<li><p>None = no two factor authentification (default)</p></li>
+<li><p>{“static password”: your_static_2fa_password} = two factor authentification using a static password method. Example: use_2fa={“static password”: “/&amp;59s^wqUU=baQ~W”}</p></li>
+<li><p>{“2FA App”: your_2fa_app_setup_key} = two factor authentification using OTP passwords like the Google Authenticator App does it. Example: use_2fa={“2FA App”: “E452ZYHEX22AXGKIFUGQVPXF”}</p></li>
+</ul>
+</p></li>
+<li><p><strong>use_tor</strong> (<em>bool</em>) – <p>Weither or not to use the tor network for requests (optional)</p>
+<ul>
+<li><p>False = use normal requests using the clearnet (default)</p></li>
+<li><p>True = use tor requests using the darknet</p></li>
+</ul>
+</p></li>
+<li><p><strong>tor_refresh</strong> (<em>int</em>) – Amount of requests per session before the IP is changed (optional) default = 5</p></li>
+<li><p><strong>retry</strong> (<em>float</em>) – Amount of time between retries in sec (optional)</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – The maximum amount of retries (optional)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="error-details">
+<h1>Error Details<a class="headerlink" href="#error-details" title="Permalink to this headline">¶</a></h1>
+<p>These are some of the Exceptions that can occur:</p>
+<div class="section" id="keynotseterror">
+<h2>KeyNotSetError<a class="headerlink" href="#keynotseterror" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="krakipy.KeyNotSetError">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">krakipy.</span></span><span class="sig-name descname"><span class="pre">KeyNotSetError</span></span><a class="reference internal" href="_modules/krakipy/krakipy.html#KeyNotSetError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KeyNotSetError" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Error indicates that you tried to do a private request but did not set the Kraken API Keys.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="krakenapierror">
+<h2>KrakenAPIError<a class="headerlink" href="#krakenapierror" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="krakipy.KrakenAPIError">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">krakipy.</span></span><span class="sig-name descname"><span class="pre">KrakenAPIError</span></span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPIError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPIError" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Error indicates that in the response to your query had an error message when it was recieved.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="callratelimiterror">
+<h2>CallRateLimitError<a class="headerlink" href="#callratelimiterror" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="krakipy.CallRateLimitError">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">krakipy.</span></span><span class="sig-name descname"><span class="pre">CallRateLimitError</span></span><a class="reference internal" href="_modules/krakipy/krakipy.html#CallRateLimitError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.CallRateLimitError" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Error indicates that you sent to many requests in the last 20s.</p>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Mind the <a class="reference external" href="https://docs.kraken.com/rest/#section/Rate-Limits">API rate limits</a> of <a class="reference external" href="https://www.kraken.com/">Kraken.com</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="public-market-data">
+<h1>Public Market Data<a class="headerlink" href="#public-market-data" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="get-server-time">
+<h2>Get Server Time<a class="headerlink" href="#get-server-time" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_server_time">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_server_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_server_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_server_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public Market Data</p>
+<p>Returns The time of the Kraken API server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Rfc1123 and unixtime</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(str, int)</p>
+</dd>
+</dl>
+<p>Example: KrakenAPI.get_server_time() -&gt; (“Sun,  6 Dec 20 14:12:39 +0000”, 1607263959)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-system-status">
+<h2>Get System Status<a class="headerlink" href="#get-system-status" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_system_status">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_system_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_system_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_system_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public Market Data</p>
+<p>Returns the current system status or trading mode and a timestamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The system status and timestamp</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(str, str)</p>
+</dd>
+</dl>
+<p>Example: KrakenAPI.get_system_status() -&gt; (“online”, “2020-12-06T13:59:55Z”)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Possible status values include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“online” (operational, full trading available)</p></li>
+<li><p>“cancel_only” (existing orders are cancelable, but new orders cannot be created)</p></li>
+<li><p>“post_only” (existing orders are cancelable, and only new post limit orders can be submitted)</p></li>
+<li><p>“maintenance” (system is offline for maintenance)</p></li>
+</ul>
+</div></blockquote>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="get-asset-info">
+<h2>Get Asset Info<a class="headerlink" href="#get-asset-info" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_asset_info">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_asset_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aclass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_asset_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_asset_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public Market Data</p>
+<p>Get information about the assets that are available for deposit, withdrawal, trading and staking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Comma delimited list of assets to get info on (optional) - default = “all”</p></li>
+<li><p><strong>aclass</strong> (<em>str</em>) – Asset class (optional) - default = “currency”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of asset names and their info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-tradable-asset-pairs">
+<h2>Get Tradable Asset Pairs<a class="headerlink" href="#get-tradable-asset-pairs" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_tradable_asset_pairs">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_tradable_asset_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pair</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_tradable_asset_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_tradable_asset_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public Market Data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>info</strong> (<em>str</em>) – <p>The info to retrieve (optional)</p>
+<ul>
+<li><p>info = all info (default)</p></li>
+<li><p>leverage = leverage info</p></li>
+<li><p>fees = fees schedule</p></li>
+<li><p>margin = margin info</p></li>
+</ul>
+</p></li>
+<li><p><strong>pair</strong> (<em>str</em>) – Comma delimited list of asset pairs to get info on (optional) - default = “all”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of pair names and their info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-ticker-information">
+<h2>Get Ticker Information<a class="headerlink" href="#get-ticker-information" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_ticker_information">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_ticker_information</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pair</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_ticker_information"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_ticker_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public Market Data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pair</strong> (<em>str</em>) – Comma delimited list of asset pairs to get info on</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of pair names and their ticker info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Today”s prices start at midnight UTC</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="get-ohlc-data">
+<h2>Get OHLC Data<a class="headerlink" href="#get-ohlc-data" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_ohlc_data">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_ohlc_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">since</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_ohlc_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_ohlc_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public Market Data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pair</strong> (<em>str</em>) – Asset pair to get OHLC data for</p></li>
+<li><p><strong>interval</strong> (<em>int</em>) – <p>The time frame interval in minutes (optional):</p>
+<ul>
+<li><p>1 (default) = 1 minute</p></li>
+<li><p>5 = 5 minutes</p></li>
+<li><p>15 = 15 minutes</p></li>
+<li><p>30 = 30 minutes</p></li>
+<li><p>60 = 1 hour</p></li>
+<li><p>240 = 4 hours</p></li>
+<li><p>1440 = 1 day</p></li>
+<li><p>10080 = 1 week</p></li>
+<li><p>21600 = 15 days</p></li>
+</ul>
+</p></li>
+<li><p><strong>since</strong> (<em>int</em>) – Return committed OHLC data since given id (optional.  exclusive)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of pair name and OHLC data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The last entry in the OHLC array is for the current, not-yet-committed frame and will always be present, regardless of the value of since.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="get-order-book">
+<h2>Get Order Book<a class="headerlink" href="#get-order-book" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_order_book">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_order_book</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_order_book"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_order_book" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public Market Data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pair</strong> (<em>str</em>) – Asset pair to get market depth for</p></li>
+<li><p><strong>count</strong> (<em>int</em>) – Maximum number of asks/bids (optional) - default = 100, Range: [1..500]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Ask and bid DataFrame of pair name and market depth</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-recent-trades">
+<h2>Get Recent Trades<a class="headerlink" href="#get-recent-trades" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_recent_trades">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_recent_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">since</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_recent_trades"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_recent_trades" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public Market Data</p>
+<p>Returns the last 1000 trades by default</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pair</strong> (<em>str</em>) – Asset pair to get trade data for</p></li>
+<li><p><strong>since</strong> (<em>int</em>) – Return trade data since given id (optional.  exclusive)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of pair name and recent trade data and id to be used as since when polling for new trade data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>, int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-recent-spreads">
+<h2>Get Recent Spreads<a class="headerlink" href="#get-recent-spreads" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_recent_spreads">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_recent_spreads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">since</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_recent_spreads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_recent_spreads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public Market Data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pair</strong> (<em>str</em>) – Asset pair to get spread data for</p></li>
+<li><p><strong>since</strong> (<em>int</em>) – Return trade data since given id (optional.  exclusive)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of pair name and recent spread data and id to be used as since when polling for new spread data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>, int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="private-user-data">
+<h1>Private User Data<a class="headerlink" href="#private-user-data" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="get-account-balance">
+<h2>Get Account Balance<a class="headerlink" href="#get-account-balance" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_account_balance">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_account_balance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_account_balance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_account_balance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieve all cash balances, net of pending withdrawals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DataFrame of asset names and balance amount</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Query</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-extended-balance">
+<h2>Get Extended Balance<a class="headerlink" href="#get-extended-balance" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_extended_balance">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_extended_balance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_extended_balance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_extended_balance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieve all extended account balances, including credits and held amounts. Balance available for trading is calculated as: available balance = balance + credit - credit_used - hold_trade</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DataFrame of asset names and balance amount</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Query</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-trade-balance">
+<h2>Get Trade Balance<a class="headerlink" href="#get-trade-balance" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_trade_balance">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_trade_balance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZEUR'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_trade_balance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_trade_balance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieve a summary of collateral balances, margin position valuations, equity and margin level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>asset</strong> (<em>str</em>) – Base asset used to determine balance - default = “ZEUR”</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of trade balance info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Query open orders &amp; trades</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-open-orders">
+<h2>Get Open Orders<a class="headerlink" href="#get-open-orders" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_open_orders">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_open_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_open_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_open_orders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieve information about currently open orders.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>bool</em>) – Whether or not to include trades in output (optional) - default = False</p></li>
+<li><p><strong>userref</strong> (<em>str</em>) – Restrict results to given user reference id (optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of open order info with txid as the index</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Query open orders &amp; trades</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-closed-orders">
+<h2>Get Closed Orders<a class="headerlink" href="#get-closed-orders" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_closed_orders">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_closed_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ofs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closetime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_closed_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_closed_orders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieve information about orders that have been closed (filled or cancelled). 50 results are returned at a time, the most recent by default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>bool</em>) – Whether or not to include trades in output (optional) - default = False</p></li>
+<li><p><strong>userref</strong> (<em>str</em>) – Restrict results to given user reference id (optional)</p></li>
+<li><p><strong>start</strong> (<em>int</em><em> or </em><em>str</em>) – Starting unix timestamp or order tx id of results (optional.  exclusive)</p></li>
+<li><p><strong>end</strong> – Ending unix timestamp or order tx id of results (optional.  inclusive)</p></li>
+<li><p><strong>ofs</strong> (<em>int</em>) – The result offset</p></li>
+<li><p><strong>closetime</strong> (<em>str</em>) – <p>Which time to use (optional):</p>
+<ul>
+<li><p>open</p></li>
+<li><p>close</p></li>
+<li><p>both (default)</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of of order info and amount of available order info matching criteria</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>, int)</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Query closed orders &amp; trades</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="query-orders-info">
+<h2>Query Orders Info<a class="headerlink" href="#query-orders-info" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.query_orders_info">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">query_orders_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.query_orders_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.query_orders_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieve information about specific orders.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trades</strong> (<em>bool</em>) – Whether or not to include trades in output (optional) - default = False</p></li>
+<li><p><strong>userref</strong> (<em>str</em>) – Restrict results to given user reference id (optional)</p></li>
+<li><p><strong>txid</strong> (<em>str</em>) – Comma delimited list of transaction ids to query info about (50 maximum)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of associative orders info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Query open orders &amp; trades</strong> or <strong>Orders and trades - Query closed orders &amp; trades</strong>, depending on status of order</p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-order-amends">
+<h2>Get Order Amends<a class="headerlink" href="#get-order-amends" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_order_amends">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_order_amends</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_order_amends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_order_amends" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieves an audit trail of amend transactions on the specified order. The list is ordered by ascending amend timestamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>order_id</strong> (<em>str</em>) – The Kraken order identifier for the amended order.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of associative orders info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Query open orders &amp; trades</strong> or <strong>Orders and trades - Query closed orders &amp; trades</strong>, depending on status of order</p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-trades-history">
+<h2>Get Trades History<a class="headerlink" href="#get-trades-history" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_trades_history">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_trades_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trade_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ofs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_trades_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_trades_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieve information about trades/fills. 50 results are returned at a time, the most recent by default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trade_type</strong> (<em>str</em>) – <p>type of trade (optional):</p>
+<ul>
+<li><p>all = all types (default)</p></li>
+<li><p>any position = any position (open or closed)</p></li>
+<li><p>closed position = positions that have been closed</p></li>
+<li><p>closing position = any trade closing all or part of a position</p></li>
+<li><p>no position = non-positional trades</p></li>
+</ul>
+</p></li>
+<li><p><strong>trades</strong> (<em>bool</em>) – Whether or not to include trades related to position in output (optional) - default = False</p></li>
+<li><p><strong>start</strong> (<em>int</em><em> or </em><em>str</em>) – Starting unix timestamp or order tx id of results (optional.  exclusive)</p></li>
+<li><p><strong>end</strong> – Ending unix timestamp or order tx id of results (optional.  inclusive)</p></li>
+<li><p><strong>ofs</strong> (<em>int</em>) – Result offset for pagination</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of trade info and the amount of available trades info matching criteria</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>, int)</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Query closed orders &amp; trades</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="query-trades-info">
+<h2>Query Trades Info<a class="headerlink" href="#query-trades-info" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.query_trades_info">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">query_trades_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.query_trades_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.query_trades_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieve information about specific trades/fills.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>txid</strong> (<em>str</em>) – Comma delimited list of transaction ids to query info about (20 maximum)</p></li>
+<li><p><strong>trades</strong> (<em>bool</em>) – Whether or not to include trades related to position in output (optional) - default = False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of associative trades info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Query closed orders &amp; trades</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-open-positions">
+<h2>Get Open Positions<a class="headerlink" href="#get-open-positions" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_open_positions">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_open_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docalcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consolidation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_open_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_open_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>txid</strong> (<em>str</em>) – Comma delimited list of transaction ids to restrict output to</p></li>
+<li><p><strong>docalcs</strong> (<em>bool</em>) – Whether or not to include profit/loss calculations (optional) - default = False</p></li>
+<li><p><strong>consolidation</strong> (<em>str</em>) – What to consolidate the positions data around (optional) - “market” = will consolidate positions based on market pair</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A DataFrame of open position info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Query open orders &amp; trades</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Using the consolidation optional field will result in consolidated view of the data being returned.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="get-ledgers-info">
+<h2>Get Ledgers Info<a class="headerlink" href="#get-ledgers-info" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_ledgers_info">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_ledgers_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aclass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ofs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_ledgers_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_ledgers_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieve information about ledger entries. 50 results are returned at a time, the most recent by default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Comma delimited list of assets to restrict output to (optional) - default = “all”</p></li>
+<li><p><strong>aclass</strong> (<em>str</em>) – Asset class (optional) - default = “currency”</p></li>
+<li><p><strong>selection_type</strong> (<em>str</em>) – <p>Type of trade (optional):</p>
+<ul>
+<li><p>all (default)</p></li>
+<li><p>deposit</p></li>
+<li><p>withdrawal</p></li>
+<li><p>trade</p></li>
+<li><p>margin</p></li>
+</ul>
+</p></li>
+<li><p><strong>start</strong> (<em>int</em><em> or </em><em>str</em>) – Starting unix timestamp or order tx id of results (optional.  exclusive)</p></li>
+<li><p><strong>end</strong> – Ending unix timestamp or order tx id of results (optional.  inclusive)</p></li>
+<li><p><strong>ofs</strong> (<em>int</em>) – Result offset for pagination</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of associative ledgers info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Data - Query ledger entries</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="query-ledgers">
+<h2>Query Ledgers<a class="headerlink" href="#query-ledgers" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.query_ledgers">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">query_ledgers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trades</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.query_ledgers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.query_ledgers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Retrieve information about specific ledger entries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – Comma delimited list of ledger ids to query info about (20 maximum)</p></li>
+<li><p><strong>trades</strong> (<em>bool</em><em> (</em><em>optional.</em><em>) </em><em>- default = False</em>) – Whether or not to include trades related to position in output</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of associative ledgers info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Data - Query ledger entries</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-trade-volume">
+<h2>Get Trade Volume<a class="headerlink" href="#get-trade-volume" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_trade_volume">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_trade_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pair</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_trade_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_trade_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pair</strong> (<em>str</em>) – Comma delimited list of asset pairs to get fee info on (optional)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The volume currency, current discount volume, DataFrame of fees and DataFrame of maker fees</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(str, float, <code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>)</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Query</strong></p>
+<p>..note:</p>
+<blockquote>
+<div><p>If an asset pair is on a maker/taker fee schedule, the taker side is given in fees and maker side in fees_maker. For pairs not on maker/taker, they will only be given in fees.</p>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="request-export-report">
+<h2>Request Export Report<a class="headerlink" href="#request-export-report" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.request_export_report">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">request_export_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">report</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CSV'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starttm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endtm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.request_export_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.request_export_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<p>Request export of trades or ledgers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>description</strong> (<em>str</em>) – Report description info</p></li>
+<li><p><strong>report</strong> (<em>str</em>) – <p>Report type</p>
+<ul>
+<li><p>trades</p></li>
+<li><p>ledgers</p></li>
+</ul>
+</p></li>
+<li><p><strong>data_format</strong> (<em>str</em>) – <p>The data format</p>
+<ul>
+<li><p>CSV (default)</p></li>
+<li><p>TSV</p></li>
+</ul>
+</p></li>
+<li><p><strong>fields</strong> (<em>str</em>) – <p>Comma delimited list of fields to include in report (optional).  default = “all”</p>
+<p>trades:</p>
+<blockquote>
+<div><ul>
+<li><p>ordertxid</p></li>
+<li><p>time</p></li>
+<li><p>ordertype</p></li>
+<li><p>price</p></li>
+<li><p>cost</p></li>
+<li><p>fee</p></li>
+<li><p>vol</p></li>
+<li><p>margin</p></li>
+<li><p>misc</p></li>
+<li><p>ledgers</p></li>
+</ul>
+</div></blockquote>
+<p>ledgers:</p>
+<blockquote>
+<div><ul>
+<li><p>refid</p></li>
+<li><p>time</p></li>
+<li><p>type</p></li>
+<li><p>aclass</p></li>
+<li><p>asset</p></li>
+<li><p>amount</p></li>
+<li><p>fee</p></li>
+<li><p>vbalance</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>asset</strong> (<em>str</em>) – Comma delimited list of assets to get info on (optional) - default = “all”</p></li>
+<li><p><strong>starttm</strong> (<em>int</em>) – Report start unixtime (optional).  default = one year before now</p></li>
+<li><p><strong>endtm</strong> (<em>int</em>) – Report end unixtime (optional).  default = now</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Report id</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Data - Export data</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Field options are based on report type.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="get-export-report-status">
+<h2>Get Export Report Status<a class="headerlink" href="#get-export-report-status" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_export_report_status">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_export_report_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_export_report_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_export_report_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>report</strong> (<em>str</em>) – <p>Report type:</p>
+<ul class="simple">
+<li><p>trades</p></li>
+<li><p>ledgers</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of reports and their info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Data - Export data</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="retrieve-export-report">
+<h2>Retrieve Export Report<a class="headerlink" href="#retrieve-export-report" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.retrieve_export_report">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">retrieve_export_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.retrieve_export_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.retrieve_export_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>report_id</strong> (<em>str</em>) – Report id</p></li>
+<li><p><strong>return_raw</strong> (<em>bool</em>) – Weither or not the report is returned as raw binary (optional) - default = False</p></li>
+<li><p><strong>dir</strong> (<em>str</em>) – If given a directory the report will be saved there as a zipfile (optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None or the binary of the compressed report.zip file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None or raw binary</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Data - Export data</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="delete-export-report">
+<h2>Delete Export Report<a class="headerlink" href="#delete-export-report" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.delete_export_report">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">delete_export_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.delete_export_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.delete_export_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>report_id</strong> (<em>str</em>) – Report id</p></li>
+<li><p><strong>remove_type</strong> (<em>str</em>) – <p>Removal type</p>
+<ul>
+<li><p>cancel</p></li>
+<li><p>delete</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns remove type</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Data - Export data</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The delete remove type can only be used for a report that has already been processed. Use cancel for queued and processing statuses.</p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="private-user-trading">
+<h1>Private User Trading<a class="headerlink" href="#private-user-trading" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="add-standard-order">
+<h2>Add Standard Order<a class="headerlink" href="#add-standard-order" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.add_standard_order">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">add_standard_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordertype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displayvol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leverage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduce_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stptype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cancel-newest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starttm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiretm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deadline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close_ordertype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close_price</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close_price2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trading_agreement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'agree'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.add_standard_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.add_standard_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Trading</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pair</strong> (<em>str</em>) – Asset pair</p></li>
+<li><p><strong>type</strong> (<em>str</em>) – <p>Type of order</p>
+<ul>
+<li><p>buy</p></li>
+<li><p>sell</p></li>
+</ul>
+</p></li>
+<li><p><strong>ordertype</strong> (<em>str</em>) – <p>Order type:</p>
+<ul>
+<li><p>market</p></li>
+<li><p>limit (price = limit price)</p></li>
+<li><p>iceberg</p></li>
+<li><p>stop-loss (price = stop loss price)</p></li>
+<li><p>take-profit (price = take profit price)</p></li>
+<li><p>stop-loss-limit (price = stop loss trigger price, price2 = triggered limit price)</p></li>
+<li><p>take-profit-limit (price = take profit trigger price, price2 = triggered limit price)</p></li>
+<li><p>trailing-stop (price = trailing stop offset)</p></li>
+<li><p>trailing-stop-limit (price = trailing stop offset, price2 = triggered limit offset)</p></li>
+<li><p>settle-position</p></li>
+</ul>
+</p></li>
+<li><p><strong>volume</strong> (<em>float</em>) – Order volume in lots</p></li>
+<li><p><strong>displayvol</strong> (<em>float</em>) – Used to edit an iceberg order, this is the visible order quantity in terms of the base asset. The rest of the order will be hidden, although the full volume can be filled at any time by any order of that size or larger that matches in the order book. displayvol can only be used with the limit order type, must be greater than 0, and less than volume.</p></li>
+<li><p><strong>price</strong> (<em>float</em><em> or </em><em>str</em>) – Price (optional.  dependent upon ordertype)</p></li>
+<li><p><strong>price2</strong> (<em>float</em><em> or </em><em>str</em>) – Secondary price (optional.  dependent upon ordertype)</p></li>
+<li><p><strong>leverage</strong> (<em>int</em>) – Amount of leverage desired (optional.  default = none)</p></li>
+<li><p><strong>reduce_only</strong> (<em>boolean</em>) – If true, order will only reduce a currently open position, not increase it or open a new position. (optional.  default = False)</p></li>
+<li><p><strong>stptype</strong> (<em>str</em>) – <p>Self trade prevention behavior definition (optional. default = “cancel-newest”):</p>
+<ul>
+<li><p>cancel-newest - if self trade is triggered, arriving order will be canceled</p></li>
+<li><p>cancel-oldest - if self trade is triggered, resting order will be canceled</p></li>
+<li><p>cancel-both - if self trade is triggered, both arriving and resting orders will be canceled</p></li>
+</ul>
+</p></li>
+<li><p><strong>oflags</strong> (<em>str</em>) – <p>Comma delimited list of order flags (optional):</p>
+<ul>
+<li><p>viqc = volume in quote currency (not available for leveraged orders)</p></li>
+<li><p>fcib = prefer fee in base currency</p></li>
+<li><p>fciq = prefer fee in quote currency</p></li>
+<li><p>nompp = no market price protection</p></li>
+<li><p>post = post only order (available when ordertype = limit)</p></li>
+</ul>
+</p></li>
+<li><p><strong>starttm</strong> (<em>int</em>) – <p>Scheduled start time (optional):</p>
+<ul>
+<li><p>0 = now (default)</p></li>
+<li><p>+&lt;n&gt; = schedule start time &lt;n&gt; seconds from now</p></li>
+<li><p>&lt;n&gt; = unix timestamp of start time</p></li>
+</ul>
+</p></li>
+<li><p><strong>expiretm</strong> (<em>int</em>) – <p>Expiration time (optional):</p>
+<ul>
+<li><p>0 = no expiration (default)</p></li>
+<li><p>+&lt;n&gt; = expire &lt;n&gt; seconds from now</p></li>
+<li><p>&lt;n&gt; = unix timestamp of expiration time</p></li>
+</ul>
+</p></li>
+<li><p><strong>userref</strong> (<em>str</em>) – User reference id. 32-bit signed number.  (optional)</p></li>
+<li><p><strong>deadline</strong> (<em>str</em>) – RFC3339 timestamp (e.g. “2023-07-01T00:18:45Z”) after which this order would be rejected.  (optional)</p></li>
+<li><p><strong>validate</strong> (<em>bool</em>) – Validate inputs only. do not submit order (optional)</p></li>
+<li><p><strong>close_ordertype</strong> (<em>str</em>) – <p>Optional closing order to add to system when order gets filled: order type</p>
+<ul>
+<li><p>limit</p></li>
+<li><p>stop-loss</p></li>
+<li><p>take-profit</p></li>
+<li><p>stop-loss-limit</p></li>
+<li><p>take-profit-limit</p></li>
+</ul>
+</p></li>
+<li><p><strong>close_price</strong> (<em>float</em><em> or </em><em>int</em>) – Price</p></li>
+<li><p><strong>close_price2</strong> (<em>float</em><em> or </em><em>int</em>) – Secondary price</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary of order description info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Create &amp; modify orders</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>See Get tradable asset pairs for specifications on asset pair prices, lots, and leverage.</p></li>
+<li><p>Prices can be preceded by +, -, or # to signify the price as a relative amount (with the exception of trailing stops, which are always relative). + adds the amount to the current offered price. - subtracts the amount from the current offered price. # will either add or subtract the amount to the current offered price, depending on the type and order type used. Relative prices can be suffixed with a % to signify the relative amount as a percentage of the offered price.</p></li>
+<li><p>For orders using leverage, 0 can be used for the volume to auto-fill the volume needed to close out your position.</p></li>
+<li><p>If you receive the error “EOrder:Trading agreement required”, refer to your API key management page for further details.</p></li>
+<li><p>Volume can be specified as 0 for closing margin orders to automatically fill the requisite quantity.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="edit-order">
+<h2>Edit Order<a class="headerlink" href="#edit-order" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.edit_order">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">edit_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displayvol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deadline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancel_response</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.edit_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.edit_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Trading</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>txid</strong> (<em>str</em>) – Transaction id</p></li>
+<li><p><strong>pair</strong> (<em>str</em>) – Asset pair</p></li>
+<li><p><strong>volume</strong> (<em>float</em>) – Order volume in lots</p></li>
+<li><p><strong>displayvol</strong> (<em>float</em>) – Used to edit an iceberg order, this is the visible order quantity in terms of the base asset. The rest of the order will be hidden, although the full volume can be filled at any time by any order of that size or larger that matches in the order book. displayvol can only be used with the limit order type, must be greater than 0, and less than volume.</p></li>
+<li><p><strong>price</strong> (<em>float</em><em> or </em><em>str</em>) – Price (optional.  dependent upon ordertype)</p></li>
+<li><p><strong>price2</strong> (<em>float</em><em> or </em><em>str</em>) – Secondary price (optional.  dependent upon ordertype)</p></li>
+<li><p><strong>oflags</strong> (<em>str</em>) – <p>Comma delimited list of order flags (optional):</p>
+<ul>
+<li><p>viqc = volume in quote currency (not available for leveraged orders)</p></li>
+<li><p>fcib = prefer fee in base currency</p></li>
+<li><p>fciq = prefer fee in quote currency</p></li>
+<li><p>nompp = no market price protection</p></li>
+<li><p>post = post only order (available when ordertype = limit)</p></li>
+</ul>
+</p></li>
+<li><p><strong>userref</strong> (<em>str</em>) – User reference id. 32-bit signed number.  (optional)</p></li>
+<li><p><strong>deadline</strong> (<em>str</em>) – RFC3339 timestamp (e.g. “2023-07-01T00:18:45Z”) after which this order would be rejected.  (optional)</p></li>
+<li><p><strong>cancel_response</strong> (<em>bool</em>) – Used to interpret if client wants to receive pending replace, before the order is completely replaced (optional. Default = False)</p></li>
+<li><p><strong>validate</strong> (<em>bool</em>) – Validate inputs only. do not submit order (optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary of order description info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Create &amp; modify orders</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="cancel-order">
+<h2>Cancel Order<a class="headerlink" href="#cancel-order" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.cancel_order">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">cancel_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.cancel_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.cancel_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Trading</p>
+<p>Cancel a particular open order (or set of open orders) by txid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>txid</strong> (<em>str</em>) – Transaction id</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Number of orders canceled and weither order(s) is/are pending cancellation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(int, bool)</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Create &amp; modify orders</strong> and <strong>Orders and trades - Cancel &amp; close orders</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="cancel-all-orders">
+<h2>Cancel All Orders<a class="headerlink" href="#cancel-all-orders" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.cancel_all_orders">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">cancel_all_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.cancel_all_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.cancel_all_orders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Trading</p>
+<p>Cancel all open orders</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Number of orders canceled</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Create &amp; modify orders</strong> and <strong>Orders and trades - Cancel &amp; close orders</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="cancel-all-orders-after-x">
+<h2>Cancel All Orders After X<a class="headerlink" href="#cancel-all-orders-after-x" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.cancel_all_orders_after">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">cancel_all_orders_after</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.cancel_all_orders_after"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.cancel_all_orders_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Trading</p>
+<p>This method provides a “Dead Man”s Switch” mechanism to protect the client from network malfunction, extreme latency or unexpected matching engine downtime. The client can send a request with a timeout (in seconds), that will start a countdown timer which will cancel all client orders when the timer expires. The client has to keep sending new requests to push back the trigger time, or deactivate the mechanism by specifying a timeout of 0. If the timer expires, all orders are cancelled and then the timer remains disabled until the client provides a new (non-zero) timeout.
+The recommended use is to make a call every 15 to 30 seconds, providing a timeout of 60 seconds. This allows the client to keep the orders in place in case of a brief disconnection or transient delay, while keeping them safe in case of a network breakdown. It is also recommended to disable the timer ahead of regularly scheduled trading engine maintenance (if the timer is enabled, all orders will be cancelled when the trading engine comes back from downtime - planned or otherwise).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<em>int</em>) – Duration (in seconds) to set/extend the timer by</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The timestamp when the request was recieved, The timestamp after which all orders will be cancelled, unless the timer is extended or disabled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str, str</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Create &amp; modify orders</strong> and <strong>Orders and trades - Cancel &amp; close orders</strong></p>
+<p>Example Return: KrakenAPI.cancel_all_orders_after(60) -&gt; (“2021-03-24T17:41:56Z”, “2021-03-24T17:42:56Z”)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="cancel-order-batch">
+<h2>Cancel Order Batch<a class="headerlink" href="#cancel-order-batch" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.cancel_order_batch">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">cancel_order_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.cancel_order_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.cancel_order_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Trading</p>
+<p>Cancel multiple open orders by txid or userref (maximum 50 total unique IDs/references)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>orders</strong> (<em>list of str</em><em> or </em><em>int</em>) – List of open order transaction IDs (txid) or user references (userref), up to a maximum of 50 total unique IDs/references.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Number of orders canceled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Orders and trades - Create &amp; modify orders</strong> and <strong>Orders and trades - Cancel &amp; close orders</strong></p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="private-user-funding">
+<h1>Private User Funding<a class="headerlink" href="#private-user-funding" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="get-deposit-methods">
+<h2>Get Deposit Methods<a class="headerlink" href="#get-deposit-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_deposit_methods">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_deposit_methods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_deposit_methods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_deposit_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Funding</p>
+<p>Retrieve methods available for depositing a particular asset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>asset</strong> (<em>str</em>) – Asset being deposited</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of deposit methods</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Query</strong> and <strong>Funds permissions - Deposit</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-deposit-addresses">
+<h2>Get Deposit Addresses<a class="headerlink" href="#get-deposit-addresses" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_deposit_addresses">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_deposit_addresses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_deposit_addresses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_deposit_addresses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Funding</p>
+<p>Retrieve (or generate a new) deposit addresses for a particular asset and method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Asset being deposited</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Name of the deopsit method</p></li>
+<li><p><strong>new</strong> (<em>bool</em>) – Whether or not to generate a new address (optional.) - default = False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of associative deposit addresses</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Query</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-status-of-recent-deposits">
+<h2>Get Status Of Recent Deposits<a class="headerlink" href="#get-status-of-recent-deposits" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_deposit_status">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_deposit_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_deposit_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_deposit_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Funding</p>
+<p>Retrieve information about recent deposits made.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Asset being deposited</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Name of the deopsit method (optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of deposit status information</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Query</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-withdrawal-information">
+<h2>Get Withdrawal Information<a class="headerlink" href="#get-withdrawal-information" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_withdrawal_info">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_withdrawal_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_withdrawal_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_withdrawal_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Funding</p>
+<p>Retrieve fee information about potential withdrawals for a particular asset, key and amount.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Asset being withdrawn</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – Withdrawal key name, as set up on your account</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – Amount to withdraw</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of associative withdrawal info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Query</strong> and <strong>Funds permissions - Withdraw</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-withdrawal-methods">
+<h2>Get Withdrawal Methods<a class="headerlink" href="#get-withdrawal-methods" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_withdrawal_methods">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_withdrawal_methods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aclass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'currency'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_withdrawal_methods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_withdrawal_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Funding</p>
+<p>Retrieve a list of withdrawal methods available for the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Filter methods for specific asset (optional)</p></li>
+<li><p><strong>aclass</strong> (<em>str</em>) – Filter methods for specific asset class (optional) - default = “currency”</p></li>
+<li><p><strong>network</strong> (<em>str</em>) – Filter methods for specific network (optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of withdrawal methods</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Query</strong> and <strong>Funds permissions - Withdraw</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="withdraw-funds">
+<h2>Withdraw Funds<a class="headerlink" href="#withdraw-funds" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.withdraw_funds">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">withdraw_funds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.withdraw_funds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.withdraw_funds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Funding</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Asset being withdrawn</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – Withdrawal key name, as set up on your account</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – Amount to withdraw</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Reference id</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Withdraw</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-status-of-recent-withdrawals">
+<h2>Get Status Of Recent Withdrawals<a class="headerlink" href="#get-status-of-recent-withdrawals" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_withdrawal_status">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_withdrawal_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_withdrawal_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_withdrawal_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Funding</p>
+<p>Retrieve information about recently requests withdrawals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Asset being withdrawn</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Name of the withdrawal method (optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame of withdrawal status information</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Withdraw</strong> or <strong>Data - Query ledger entries</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="request-withdrawal-cancelation">
+<h2>Request Withdrawal Cancelation<a class="headerlink" href="#request-withdrawal-cancelation" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.request_withdrawal_cancel">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">request_withdrawal_cancel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.request_withdrawal_cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.request_withdrawal_cancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Funding</p>
+<p>Cancel a recently requested withdrawal, if it has not already been successfully processed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Asset being withdrawn</p></li>
+<li><p><strong>refid</strong> (<em>str</em>) – Withdrawal reference id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True on success</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Withdraw</strong>, unless withdrawal is a <strong>WalletTransfer</strong>, then no permissions are required.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Cancelation cannot be guaranteed.</strong> This will put in a cancelation request. Depending upon how far along the withdrawal process is, it may not be possible to cancel the withdrawal.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="wallet-transfer">
+<h2>Wallet Transfer<a class="headerlink" href="#wallet-transfer" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.wallet_transfer_to_futures">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">wallet_transfer_to_futures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.wallet_transfer_to_futures"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.wallet_transfer_to_futures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Funding</p>
+<p>Transfer from Kraken spot wallet to Kraken Futures holding wallet. Note that a transfer in the other direction must be requested via the Kraken Futures API endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Asset being withdrawn</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – Amount to withdraw</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Reference id</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="private-user-staking">
+<h1>Private User Staking<a class="headerlink" href="#private-user-staking" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="stake-asset">
+<h2>Stake Asset<a class="headerlink" href="#stake-asset" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.stake_asset">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">stake_asset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.stake_asset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.stake_asset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Staking</p>
+<p>Stake an asset from your spot wallet. This operation requires an API key with Withdraw funds permission.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Asset to stake</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – Amount of the asset to stake</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Name of the staking option to use (refer to <a class="reference internal" href="#krakipy.KrakenAPI.get_stakeable_assets" title="krakipy.KrakenAPI.get_stakeable_assets"><code class="xref py py-attr docutils literal notranslate"><span class="pre">KrakenAPI.get_stakeable_assets</span></code></a> for the correct method names for each asset)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Reference ID of the Staking Transaction</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Withdraw</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="unstake-asset">
+<h2>Unstake Asset<a class="headerlink" href="#unstake-asset" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.unstake_asset">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">unstake_asset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.unstake_asset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.unstake_asset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Staking</p>
+<p>Unstake an asset from your spot wallet. This operation requires an API key with Withdraw funds permission.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>asset</strong> (<em>str</em>) – Asset to unstake (asset ID or altname). Must be a valid staking asset (e.g. XBT.M, XTZ.S, ADA.S)</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – Amount of the asset to unstake</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Reference ID of the Unstaking Transaction</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Withdraw</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-stakeable-assets">
+<h2>Get Stakeable Assets<a class="headerlink" href="#get-stakeable-assets" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_stakeable_assets">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_stakeable_assets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_stakeable_assets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_stakeable_assets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Staking</p>
+<p>Returns the list of assets that the user is able to stake. This operation requires an API key with both Withdraw funds and Query funds permission.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DataFrame of stakeable assets</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-pending-staking-transactions">
+<h2>Get Pending Staking Transactions<a class="headerlink" href="#get-pending-staking-transactions" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_pending_staking_transactions">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_pending_staking_transactions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_pending_staking_transactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_pending_staking_transactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Staking</p>
+<p>Returns the list of pending staking transactions. Once resolved, these transactions will appear on the List of Staking Transactions endpoint.
+This operation requires an API key with both Query funds and Withdraw funds permissions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DataFrame of pending staking transactions</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Query</strong></p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-staking-transactions">
+<h2>Get Staking Transactions<a class="headerlink" href="#get-staking-transactions" title="Permalink to this headline">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="krakipy.KrakenAPI.get_staking_transactions">
+<span class="sig-prename descclassname"><span class="pre">KrakenAPI.</span></span><span class="sig-name descname"><span class="pre">get_staking_transactions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#KrakenAPI.get_staking_transactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.KrakenAPI.get_staking_transactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private User Staking</p>
+<p>Returns the list of all staking transactions. This endpoint can only return up to 1000 of the most recent transactions.
+This operation requires an API key with Query funds permissions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DataFrame of all staking transactions</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+<p>API Key Permissions Required: <strong>Funds permissions - Query</strong></p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="extras">
+<h1>Extras<a class="headerlink" href="#extras" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="add-datetime">
+<h2>Add datetime<a class="headerlink" href="#add-datetime" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="krakipy.add_dtime">
+<span class="sig-prename descclassname"><span class="pre">krakipy.</span></span><span class="sig-name descname"><span class="pre">add_dtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#add_dtime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.add_dtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extra</p>
+<p>Adds a new column “dtime” (datetime) from the column “time” (unixtime)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>) – A DataFrame with a column “time” in unixtime-format</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>df with a “dtime” column added</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="datetime-to-unixtime">
+<h2>Datetime to unixtime<a class="headerlink" href="#datetime-to-unixtime" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="krakipy.datetime_to_unixtime">
+<span class="sig-prename descclassname"><span class="pre">krakipy.</span></span><span class="sig-name descname"><span class="pre">datetime_to_unixtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#datetime_to_unixtime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.datetime_to_unixtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extra</p>
+<p>Converts from datetime to unixtime</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dt</strong> (<code class="xref py py-attr docutils literal notranslate"><span class="pre">datetime.datetime</span></code>) – datetime object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the unixtime of dt</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="unixtime-to-datetime">
+<h2>Unixtime to datetime<a class="headerlink" href="#unixtime-to-datetime" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="krakipy.unixtime_to_datetime">
+<span class="sig-prename descclassname"><span class="pre">krakipy.</span></span><span class="sig-name descname"><span class="pre">unixtime_to_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ux</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krakipy/krakipy.html#unixtime_to_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#krakipy.unixtime_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extra</p>
+<p>Converts from unixtime to datetime</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ux</strong> (<em>int</em>) – unixtime timestamp</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the datetime of ux</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">datetime.datetime</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2025, Hubertus Wilisch.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

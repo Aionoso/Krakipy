@@ -187,8 +187,8 @@ class KrakenAPI(object):
     def __del__(self):
         if self.session is not None:
             self.session.close()
-        del self.key
-        del self.secret_key
+        del self._key
+        del self._secret_key
         del self._authentification
         
     def close(self):
@@ -635,6 +635,30 @@ class KrakenAPI(object):
         return orders
 
 
+    @callratelimiter(1)
+    def get_order_amends(self, order_id):
+        """
+        Private User Data
+
+        Retrieves an audit trail of amend transactions on the specified order. The list is ordered by ascending amend timestamp.
+
+            
+        :param order_id: The Kraken order identifier for the amended order.
+        :type order_id: str
+
+        :returns: DataFrame of associative orders info
+        :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Orders and trades - Query open orders & trades** or **Orders and trades - Query closed orders & trades**, depending on status of order
+        """
+        res = self._do_private_request("OrderAmends", order_id=order_id)
+        orders = DataFrame(res["amends"], index=["amend_id", "amend_type", "order_qty", "remaining_qty", "limit_price", "timestamp"])
+
+        orders[["order_qty", "remaining_qty", "limit_price", "timestamp"]] = orders[["order_qty", "remaining_qty", "limit_price", "timestamp"]].astype(float)
+        return orders
+
+
     @callratelimiter(2)
     def get_trades_history(self, trade_type="all", trades=False, start=None, end=None, ofs=None):
         """
@@ -923,7 +947,7 @@ class KrakenAPI(object):
         :type report_id: str
         :param return_raw: Weither or not the report is returned as raw binary (optional) - default = False
         :type return_raw: bool
-        :param dir: If given a directory the report will be saved there as a zipfile
+        :param dir: If given a directory the report will be saved there as a zipfile (optional)
         :type dir: str
         
         :returns: None or the binary of the compressed report.zip file
@@ -932,6 +956,8 @@ class KrakenAPI(object):
 
         API Key Permissions Required: **Data - Export data**
         """
+        assert not return_raw and dir == None, "At least one way the Data is returned must be specified"
+
         report = self._do_private_request("RetrieveExport", id=report_id)
         if dir != None:
             with open("{}Report_{}.zip".format(dir, report_id), "wb") as f:
@@ -992,15 +1018,13 @@ class KrakenAPI(object):
 
             - market
             - limit (price = limit price)
+            - iceberg
             - stop-loss (price = stop loss price)
             - take-profit (price = take profit price)
-            - stop-loss-profit (price = stop loss price, price2 = take profit price)
-            - stop-loss-profit-limit (price = stop loss price, price2 = take profit price)
             - stop-loss-limit (price = stop loss trigger price, price2 = triggered limit price)
             - take-profit-limit (price = take profit trigger price, price2 = triggered limit price)
             - trailing-stop (price = trailing stop offset)
             - trailing-stop-limit (price = trailing stop offset, price2 = triggered limit offset)
-            - stop-loss-and-limit (price = stop loss price, price2 = limit price)
             - settle-position
 
         :type ordertype: str
@@ -1353,6 +1377,33 @@ class KrakenAPI(object):
         return wd
 
 
+    @callratelimiter(1)
+    def get_withdrawal_methods(self, asset=None, aclass="currency", network=None):
+        """
+        Private User Funding
+
+        Retrieve a list of withdrawal methods available for the user.
+
+        
+        :param asset: Filter methods for specific asset (optional)
+        :type asset: str
+        :param aclass: Filter methods for specific asset class (optional) - default = "currency"
+        :type aclass: str
+        :param network: Filter methods for specific network (optional)
+        :type network: str
+
+        :returns: DataFrame of withdrawal methods
+        :rtype: :py:attr:`pandas.DataFrame`
+
+
+        API Key Permissions Required: **Funds permissions - Query** and **Funds permissions - Withdraw**
+        """
+        res = self._do_private_request("WithdrawMethods", asset=asset, aclass=aclass, network=network)
+        wd = DataFrame(res, columns=["asset", "method", "network", "minimum"])
+        wd["minimum"] = wd["minimum"].astype(float)
+        return wd
+
+
     def withdraw_funds(self, asset, key, amount):
         """
         Private User Funding
@@ -1472,6 +1523,7 @@ class KrakenAPI(object):
         API Key Permissions Required: **Funds permissions - Withdraw**
         """
         return str(self._do_private_request("Stake", asset=asset, amount=amount, method=method)["refid"])
+
 
     @callratelimiter(2)
     def unstake_asset(self, asset, amount):

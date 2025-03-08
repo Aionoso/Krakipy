@@ -6,11 +6,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Aionoso/Krakipy/blob/master/LICENSE)
 
 Krakipy is an easy to use Kraken API.
-It uses the [REST-API](https://docs.kraken.com/rest/#section/General-Usage) of the [Kraken.com](https://www.kraken.com) cryptocurrency exchange.
+
+It uses the [REST-API](https://docs.kraken.com/api/docs/rest-api/get-server-time) of the [Kraken.com](https://www.kraken.com) cryptocurrency exchange.
 
 For more information please visit the [krakipy documentation](https://krakipy.readthedocs.io/en/latest/)
 
+08.03.2025 - Updated krakipy to include get_order_amends and get_withdrawal_methods and fixed bugs
+
 29.10.2023 - Updated krakipy to include new functions and fixed bugs
+
 31.07.2021 - Updated krakipy to support staking and unstaking
 
 
@@ -72,7 +76,7 @@ kr = KrakenAPI(api_key, api_key_secret)
 kr.add_standard_order("XXBTZEUR", "buy", "limit", volume = 1.5, price = 100000.0)
 ->
 {'descr': {'order': 'buy 1.50000000 XBTEUR @ limit 100000.0'},
- 'txid': ['OHPCQQ-HRJTQ-ZBDGSE']}
+ 'txid': ['OHPCQQ-HRJTQ-ZBKGSE']}
 
 
 # Check your account balance
@@ -93,4 +97,4 @@ kr.retrieve_export_report(report_id, dir="kraken_reports/")
 The krakipy code is licensed under the MIT LICENSE.
 This program comes with ABSOLUTELY NO WARRANTY
 
-Krakipy Copyright (C) 2020-2023  Hubertus Wilisch
+Krakipy Copyright (C) 2020-2025  Hubertus Wilisch
