@@ -13,7 +13,7 @@ setup(name = "krakipy",
     long_description_content_type="text/markdown",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    keywords="kraken api crypto finance bitcoin tor mit",
+    keywords="kraken api crypto finance bitcoin tor mit exchange",
     classifiers=[
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Security",
