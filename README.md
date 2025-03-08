@@ -44,7 +44,6 @@ from krakipy import KrakenAPI
 # Create a session
 kr = KrakenAPI()
 
-
 # Get Ticker for Bitcoin/EUR
 kr.get_ticker_information("XXBTZEUR")
 
@@ -69,27 +68,22 @@ api_key = "*************************************************"
 api_key_secret = "*************************************************"
 
 # Create a validated session
-kr = KrakenAPI(api_key, api_key_secret)
+with KrakenAPI(api_key, api_key_secret) as kr:
 
+	# Create a limit order to buy 1.5 Bitcoin at 100,000.0 EUR/BTC
+	kr.add_standard_order("XXBTZEUR", "buy", "limit", volume = 1.5, price = 100000.0)
 
-# Create a Limit order to buy 1.5 Bitcoin under 100,000.0 EUR/BTC
-kr.add_standard_order("XXBTZEUR", "buy", "limit", volume = 1.5, price = 100000.0)
-->
-{'descr': {'order': 'buy 1.50000000 XBTEUR @ limit 100000.0'},
- 'txid': ['OHPCQQ-HRJTQ-ZBKGSE']}
+	# Check your account balance
+	kr.get_account_balance()
 
+	# Withdraw 1.0 Bitcoin to myBTCWallet
+	kr.withdraw("XBT", "myBTCWallet", 1.0)
 
-# Check your account balance
-kr.get_account_balance()
+	# Unstake 300.0 Solana
+	kr.unstake_asset("SOL", 300.0)
 
-# Withdraw 1.0 Bitcoin to myBTCWallet
-kr.withdraw("XBT", "myBTCWallet", 1.0)
-
-# Unstake 300.0 Polkadot
-kr.unstake_asset("DOT", 300.0)
-
-# Download and save an export report to kraken_reports/
-kr.retrieve_export_report(report_id, dir="kraken_reports/")
+	# Download and save an export report to kraken_reports/
+	kr.retrieve_export_report(report_id, dir="kraken_reports/")
 ```
 
 ## License
