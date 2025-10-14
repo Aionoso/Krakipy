@@ -11,6 +11,8 @@ It uses the [REST-API](https://docs.kraken.com/api/docs/rest-api/get-server-time
 
 For more information please visit the [krakipy documentation](https://krakipy.readthedocs.io/en/latest/)
 
+16.08.2025 - Updated krakipy to include amend_order, get_credit_line, add_order_batch, get_websocket_token, create_subaccount, account_transfer, get_withdrawal_adresses, get_pre_trade_data, get_post_trade_data and fixed bugs
+
 08.03.2025 - Updated krakipy to include get_order_amends and get_withdrawal_methods and fixed bugs
 
 29.10.2023 - Updated krakipy to include new functions and fixed bugs
@@ -70,17 +72,17 @@ api_key_secret = "*************************************************"
 # Create a validated session
 with KrakenAPI(api_key, api_key_secret) as kr:
 
-	# Create a limit order to buy 1.5 Bitcoin at 100,000.0 EUR/BTC
+	# Send a limit order to buy 1.5 Bitcoin at 100,000.0 EUR/BTC
 	kr.add_standard_order("XXBTZEUR", "buy", "limit", volume = 1.5, price = 100000.0)
 
 	# Check your account balance
 	kr.get_account_balance()
 
+	# Check your withdrawal adresses
+	kr.get_withdrawal_adresses()
+
 	# Withdraw 1.0 Bitcoin to myBTCWallet
 	kr.withdraw("XBT", "myBTCWallet", 1.0)
-
-	# Unstake 300.0 Solana
-	kr.unstake_asset("SOL", 300.0)
 
 	# Download and save an export report to kraken_reports/
 	kr.retrieve_export_report(report_id, dir="kraken_reports/")
@@ -89,6 +91,6 @@ with KrakenAPI(api_key, api_key_secret) as kr:
 ## License
 
 The krakipy code is licensed under the MIT LICENSE.
-This program comes with ABSOLUTELY NO WARRANTY
+This program comes with no WARRANTY.
 
 Krakipy Copyright (C) 2020-2025  Hubertus Wilisch
