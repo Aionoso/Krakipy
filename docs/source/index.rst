@@ -96,6 +96,10 @@ Get Extended Balance
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_extended_balance
 
+Get Credit Lines
+--------------------------------------------------------
+.. automethod:: KrakenAPI.get_credit_lines
+
 Get Trade Balance
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_trade_balance
@@ -166,9 +170,9 @@ Add Standard Order
 --------------------------------------------------------
 .. automethod:: KrakenAPI.add_standard_order
 
-Edit Order
+Amend Order
 --------------------------------------------------------
-.. automethod:: KrakenAPI.edit_order
+.. automethod:: KrakenAPI.amend_order
 
 Cancel Order
 --------------------------------------------------------
@@ -181,6 +185,14 @@ Cancel All Orders
 Cancel All Orders After X
 --------------------------------------------------------
 .. automethod:: KrakenAPI.cancel_all_orders_after
+
+Get Websocket Token
+--------------------------------------------------------
+.. automethod:: KrakenAPI.get_websocket_token
+
+Add Order Batch
+--------------------------------------------------------
+.. automethod:: KrakenAPI.add_order_batch
 
 Cancel Order Batch
 --------------------------------------------------------
@@ -204,13 +216,17 @@ Get Status Of Recent Deposits
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_deposit_status
 
-Get Withdrawal Information
---------------------------------------------------------
-.. automethod:: KrakenAPI.get_withdrawal_info
-
 Get Withdrawal Methods
 --------------------------------------------------------
 .. automethod:: KrakenAPI.get_withdrawal_methods
+
+Get Withdrawal Addresses
+--------------------------------------------------------
+.. automethod:: KrakenAPI.get_withdrawal_addresses
+
+Get Withdrawal Information
+--------------------------------------------------------
+.. automethod:: KrakenAPI.get_withdrawal_info
 
 Withdraw Funds
 --------------------------------------------------------
@@ -231,28 +247,30 @@ Wallet Transfer
 
 
 
-Private User Staking
+Subaccounts
 ========================================================
 
-Stake Asset
+Create Subaccount
 --------------------------------------------------------
-.. automethod:: KrakenAPI.stake_asset
+.. automethod:: KrakenAPI.create_subaccount
 
-Unstake Asset
+Account Transfer
 --------------------------------------------------------
-.. automethod:: KrakenAPI.unstake_asset
+.. automethod:: KrakenAPI.account_transfer
 
-Get Stakeable Assets
---------------------------------------------------------
-.. automethod:: KrakenAPI.get_stakeable_assets
 
-Get Pending Staking Transactions
---------------------------------------------------------
-.. automethod:: KrakenAPI.get_pending_staking_transactions
 
-Get Staking Transactions
+
+Transparency
+========================================================
+
+Get Pre-trade Data
 --------------------------------------------------------
-.. automethod:: KrakenAPI.get_staking_transactions
+.. automethod:: KrakenAPI.get_pre_trade_data
+
+Get Post-trade Data
+--------------------------------------------------------
+.. automethod:: KrakenAPI.get_post_trade_data
 
 
 
