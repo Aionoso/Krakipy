@@ -1,6 +1,17 @@
 krakipy change log
 ===========================
 
+[v0.1.11]
+------------------------------
+
+Added
+^^^^^
+* Added amend_order, get_credit_line, add_order_batch, get_websocket_token, create_subaccount, account_transfer, get_withdrawal_adresses, get_pre_trade_data, get_post_trade_data
+
+Fixed
+^^^^^^^
+* Fixed session delete exception on close
+
 [v0.1.10]
 ------------------------------
 
@@ -87,4 +98,5 @@ Added
 
 Added
 ^^^^^
+
 * Added two factor authentification
